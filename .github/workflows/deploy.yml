@@ -19,7 +19,7 @@ jobs:
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true
           script: |
-            cd /home/Hoo-Hae/back/
+            cd /home/hoohae/Hoo-Hae/back/
             git pull origin master
             ./gradlew clean build -x test
             fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true

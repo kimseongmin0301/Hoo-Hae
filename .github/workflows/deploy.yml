@@ -21,7 +21,7 @@ jobs:
           script: | 
             cd /home/hoohae/Hoo-Hae/
             git pull origin master
-            cd /home/hoohae/Hoo-Hae/back  
-            sh build.sh 
+            cd /home/hoohae/Hoo-Hae/back
+            sh /home/hoohae/Hoo-Hae/back/scripts/build.sh 
             sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
             nohup java -jar /home/hoohae/Hoo-Hae/back/build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

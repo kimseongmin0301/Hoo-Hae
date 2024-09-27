@@ -2,7 +2,7 @@ name: Poten HooHae
 
 on:
   push:
-    barnches:
+    branches:
       - master
 
 jobs:

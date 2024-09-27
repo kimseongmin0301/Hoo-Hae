@@ -40,3 +40,4 @@ out/
 /back/.idea
 /back/HELP.md
 /gradle
+/back/src/main/resources/application.yml

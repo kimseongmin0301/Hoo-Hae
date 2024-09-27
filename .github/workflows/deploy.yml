@@ -1,0 +1,24 @@
+name: Poten HooHae
+
+on:
+  push:
+    barnches:
+      - master
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-22.04-base
+    steps:
+      - name: SSH 접속
+        uses: appleboy/ssh-actions@v1.0.3
+        with:
+          host: ${{ secrets.POTEN_HOST }}
+          username: ${{ secrets.POTEN_USERNAME }}
+          key: ${{ secrets.POTEN_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            cd /root/Hoo-Hae
+            git pull origin master
+            ./gradlew clean build
+            fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
+            nohup java -jar /back/build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

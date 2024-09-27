@@ -24,4 +24,4 @@ jobs:
             cd back
             ./gradlew clean build -x test
             fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
-            nohup java -jar /back/build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
+            nohup java -jar /home/hoohae/Hoo-Hae/back/build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

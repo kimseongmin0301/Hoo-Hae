@@ -23,5 +23,5 @@ jobs:
             git pull origin master
             cd back
             ./gradlew clean build -x test
-            sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true 
+            sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
             nohup java -jar /home/hoohae/Hoo-Hae/back/build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

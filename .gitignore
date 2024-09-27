@@ -39,5 +39,4 @@ out/
 /back/.gradle
 /back/.idea
 /back/HELP.md
-/back/gradle/**
 /gradle

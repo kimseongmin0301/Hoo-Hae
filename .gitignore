@@ -38,9 +38,6 @@ out/
 
 /back/.gradle
 /back/.idea
-/back/gradlew
-/back/gradlew.bat
 /back/HELP.md
-/back/settings.gradle
 /back/gradle/**
 /gradle

@@ -19,8 +19,9 @@ jobs:
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true
           script: |
-            cd /home/hoohae/Hoo-Hae/back/
+            cd /home/hoohae/Hoo-Hae/
             git pull origin master
+            cd back
             ./gradlew clean build -x test
             fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
             nohup java -jar /back/build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &

@@ -13,6 +13,13 @@ java {
 	}
 }
 
+toolchainManagement {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

@@ -7,7 +7,7 @@ on:
 
 jobs:
   Deploy:
-    runs-on: ubuntu-22.04-base
+    runs-on: ubuntu-latest
     steps:
       - name: SSH 접속
         uses: appleboy/ssh-actions@v1.0.3

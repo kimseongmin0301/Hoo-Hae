@@ -14,7 +14,6 @@ jobs:
         with:
           host: ${{ secrets.POTEN_HOST }}
           username: ${{ secrets.POTEN_USERNAME }}
-#          key: ${{ secrets.POTEN_PRIVATE_KEY }}
           password: ${{ secrets.POTEN_PASSWORD }}
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true

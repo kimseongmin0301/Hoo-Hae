@@ -19,10 +19,8 @@ jobs:
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true
           script: |
-            export JAVA_HOME=/home/hoohae/jdk-17
-            export PATH=$JAVA_HOME/bin:$PATH
-            cd /home/hoohae/Hoo-Hae/back
+            cd /root/Hoo-Hae/back
             git pull origin master
             ./gradlew clean build -x test
             sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
-            sh /home/hoohae/Hoo-Hae/back/scripts/build_spring.sh
+            sh /root/Hoo-Hae/back/scripts/build_spring.sh

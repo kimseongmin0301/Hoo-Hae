@@ -21,7 +21,6 @@ jobs:
           script: | 
             cd /home/hoohae/Hoo-Hae/
             git pull origin master
-            cd /home/hoohae/Hoo-Hae/back
-            ./gradlew clean build -x test
+            /home/hoohae/Hoo-Hae/back/gradlew clean build -x test
             sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
             sh /home/hoohae/Hoo-Hae/back/scripts/build_spring.sh

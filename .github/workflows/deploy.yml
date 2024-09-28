@@ -19,8 +19,8 @@ jobs:
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true
           script: |
-            cd /root/Hoo-Hae/back
+            cd ${{ secrets.POTEN_DIR_NAME }}/Hoo-Hae/back
             git pull origin master
             ./gradlew clean build -x test
             sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
-            sh /root/Hoo-Hae/back/scripts/build_spring.sh
+            sh ${{ secrets.POTEN_DIR_NAME }}/Hoo-Hae/back/scripts/build_spring.sh

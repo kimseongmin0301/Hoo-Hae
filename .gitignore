@@ -41,3 +41,4 @@ out/
 /back/HELP.md
 /gradle
 /back/src/main/resources/application.yml
+*.yml

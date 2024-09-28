@@ -25,3 +25,4 @@ jobs:
             sh /home/hoohae/Hoo-Hae/back/scripts/build.sh 
             sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
             sh /home/hoohae/Hoo-Hae/back/scripts/build_spring.sh
+# 왜안돼

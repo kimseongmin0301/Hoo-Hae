@@ -19,7 +19,7 @@ jobs:
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true
           script: |
-            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+            export JAVA_HOME=/home/hoohae/jdk-17
             export PATH=$JAVA_HOME/bin:$PATH
             cd /home/hoohae/Hoo-Hae/
             git pull origin master

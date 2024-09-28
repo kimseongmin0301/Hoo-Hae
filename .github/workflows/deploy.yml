@@ -21,8 +21,8 @@ jobs:
           script: |
             export JAVA_HOME=/home/hoohae/jdk-17
             export PATH=$JAVA_HOME/bin:$PATH
-            cd /home/hoohae/Hoo-Hae/
+            cd /home/hoohae/Hoo-Hae/back
             git pull origin master
-            /home/hoohae/Hoo-Hae/back/gradlew clean build -x test --info
+            ./gradlew clean build -x test
             sudo fuser -k -n tcp ${{ secrets.POTEN_BACK_PORT }} || true
             sh /home/hoohae/Hoo-Hae/back/scripts/build_spring.sh

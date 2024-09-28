@@ -9,13 +9,6 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-
-      - name: Install JDK
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
       - name: SSH 접속
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -25,7 +18,9 @@ jobs:
           password: ${{ secrets.POTEN_PASSWORD }}
           port: ${{ secrets.POTEN_SSH_PORT }}
           script_stop: true
-          script: | 
+          script: |
+            export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+            export PATH=$JAVA_HOME/bin:$PATH
             cd /home/hoohae/Hoo-Hae/
             git pull origin master
             /home/hoohae/Hoo-Hae/back/gradlew clean build -x test --info

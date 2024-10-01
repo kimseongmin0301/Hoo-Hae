@@ -18,4 +18,7 @@ public class BoardRequestDto {
     private List<MultipartFile> image;
     private String userId;
     private String nickname;
+    private String type;
+    private Long age;
+    private Long category;
 }

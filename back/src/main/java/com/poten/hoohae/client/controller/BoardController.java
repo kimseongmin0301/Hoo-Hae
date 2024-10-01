@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
@@ -38,9 +40,13 @@ public class BoardController {
     }
 
     @PostMapping(value = "/save", consumes = "multipart/form-data")
-    public ResponseEntity<Long> saveBoard(@ModelAttribute BoardRequestDto dto){
-
-        return ResponseEntity.ok(boardService.saveBoard(dto));
+    public ResponseEntity<Long> saveBoard(@ModelAttribute BoardRequestDto dto) throws IOException {
+        try {
+            Long savedBoardId = boardService.saveBoard(dto);
+            return ResponseEntity.ok(savedBoardId);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
+        }
     }
 
     @PutMapping("/update/{id}")

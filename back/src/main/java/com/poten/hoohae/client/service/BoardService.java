@@ -6,13 +6,16 @@ import com.poten.hoohae.client.dto.req.BoardRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,8 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+
+    private final S3Service s3Service;
 
     public List<BoardResponseDto> getBoardList(int page, Long age) {
         Page<Board> board;
@@ -43,7 +48,7 @@ public class BoardService {
                         .userId(b.getUserId())
                         .age(age)
                         .isAdopte(b.getAdoptionId() != null)
-                        .nickname(b.getNickanme())
+                        .nickname(b.getNickname())
                         .category(b.getCategory())
                         .type(b.getType())
                         .createdAt(b.getCreatedAt())
@@ -57,13 +62,33 @@ public class BoardService {
         return boardRepository.countBoardsByAge(age);
     }
 
-    public Long saveBoard(BoardRequestDto dto) {
+    @Transactional
+    public Long saveBoard(BoardRequestDto dto) throws IOException {
+        List<MultipartFile> images = dto.getImage();
+        String thumbnailUrl = "";
+
+        if(images == null) {
+
+        } else if (images.size() > 3) {
+            throw new IllegalArgumentException("이미지 수가 3개를 초과합니다.");
+        } else {
+            List<String> imageUrls = s3Service.uploadFiles(images);
+            thumbnailUrl = imageUrls.isEmpty() ? null : imageUrls.get(0);
+        }
+
+        // 게시글 데이터 저장
         Board board = Board.builder()
+                .userId(dto.getUserId())
+                .nickname(dto.getNickname())
                 .subject(dto.getSubject())
                 .body(dto.getBody())
-
+                .thumbnail(thumbnailUrl) // 썸네일 설정
+                .vote(0L) // 초기 투표 수
+                .age(dto.getAge())
+                .category(dto.getCategory())
+                .type(dto.getType())
                 .build();
 
-        return 1L;
+        return boardRepository.save(board).getId(); // 게시글 ID 반환
     }
 }

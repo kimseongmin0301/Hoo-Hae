@@ -23,7 +23,7 @@ public class Board {
     private String userId;
 
     @Column(name = "NICKNAME")
-    private String nickanme;
+    private String nickname;
 
     @Column(name = "SUBJECT")
     private String subject;
@@ -38,7 +38,7 @@ public class Board {
     private Long adoptionId;
 
     @Column(name = "THUMBNAIL")
-    private Long thumbnail;
+    private String thumbnail;
 
     @Column(name = "AGE")
     private Long age;

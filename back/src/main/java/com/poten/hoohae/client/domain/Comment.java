@@ -1,4 +1,4 @@
-package com.poten.hoohae.auth.domain;
+package com.poten.hoohae.client.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,16 +8,19 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Table(name = "USER")
+@Table(name = "COMMENT")
 @Entity
-@Getter
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "BOARD_ID")
+    private Long boardId;
 
     @Column(name = "USER_ID")
     private String userId;
@@ -28,18 +31,11 @@ public class User {
     @Column(name = "AGE")
     private Long age;
 
-    @Column(name = "STATUS")
-    private Long status;
+    @Column(name = "VOTE")
+    private Long vote;
 
-    @Column(name = "ROLE")
-    @Builder.Default
-    private String role = "ROLE_USER";
-
-    @Column(name = "CHARACTER_ID")
-    private Long characterId;
-
-    @Column(name = "REFRESH_TOKEN")
-    private String refreshToken;
+    @Column(name = "ADOPT_STATUS")
+    private Long adoptStatus;
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;

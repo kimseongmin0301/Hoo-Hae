@@ -25,6 +25,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String userId = oAuth2User.getName();
         String token = jwtProvider.create(userId);
 
-        response.sendRedirect("https://api.hoohae.com/api/token?token=" + token);
+        response.sendRedirect("https://hoohae.com/main?token=" + token);
     }
 }

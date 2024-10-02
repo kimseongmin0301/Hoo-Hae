@@ -54,7 +54,7 @@ public class SecurityConfig {
                 // oauth2 설정
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/v1/auth/oauth2"))
-                        .redirectionEndpoint(endpoint -> endpoint.baseUri("/oauth2/callback/*"))
+                        .redirectionEndpoint(endpoint -> endpoint.baseUri("https://api.hoohae.com/oauth2/callback/*"))
                         .userInfoEndpoint(endpoint -> endpoint.userService(defaultOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler))
                 .exceptionHandling(exceptionHandling -> exceptionHandling

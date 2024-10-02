@@ -3,6 +3,7 @@ package com.poten.hoohae.auth.handler;
 import com.poten.hoohae.auth.provider.JwtProvider;
 import com.poten.hoohae.client.domain.CustomOAuth2User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String userId = oAuth2User.getName();
         String token = jwtProvider.create(userId);
 
-        response.sendRedirect("https://hoohae.com/main?token=" + token);
+        // 쿠키 설정
+        Cookie cookie = new Cookie("hoohae_jwt_token", token);
+        cookie.setPath("/");
+        cookie.setHttpOnly(false);
+        cookie.setSecure(true);
+        cookie.setMaxAge(720);
+        response.addCookie(cookie);
+
+        // 리다이렉트
+        response.sendRedirect("https://hoohae.com/main");
     }
+
 }

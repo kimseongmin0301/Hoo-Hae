@@ -34,6 +34,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setSecure(true);
         cookie.setMaxAge(720);
 
+        response.addCookie(cookie);
+
         // SameSite 속성 설정 (Java Servlet API에서 직접 설정할 수 없으므로 응답 헤더를 사용)
         response.setHeader("Set-Cookie",
                 "hoohae_jwt_token=" + token + "; Path=/; Domain=hoohae.com; HttpOnly=false; Secure=true; Max-Age=720; SameSite=None");

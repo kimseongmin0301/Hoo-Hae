@@ -1,0 +1,6 @@
+<svg id="btn_back" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="Arrow_Left" data-name="Arrow Left">
+    <path id="Path" d="M0,0H24V24H0Z" fill="none"/>
+    <path id="_Icon_Color" data-name="🔹 Icon Color" d="M14.583,6.593H3.412l4.88-4.88a1.008,1.008,0,0,0,0-1.42,1,1,0,0,0-1.41,0L.292,6.883a1,1,0,0,0,0,1.41l6.59,6.59a1,1,0,0,0,1.41-1.41l-4.88-4.88h11.17a1,1,0,1,0,0-2Z" transform="translate(4.418 4.407)" fill="#091d60"/>
+  </g>
+</svg>

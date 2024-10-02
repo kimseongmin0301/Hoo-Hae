@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        async function redirectToOAuth() {
+            const response = await fetch('http://localhost/oauth/code/kakao', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                }
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+            } else {
+                console.error('Failed to get redirect URL');
+            }
+        }
+    </script>
+</head>
+<body>
+    <button onclick="redirectToOAuth()">Kakao Login</button>
+
+    <a href="http://localhost/oauth/code/kakao">KAKAO</a>
+</body>
+</html>

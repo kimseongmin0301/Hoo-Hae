@@ -1,0 +1,19 @@
+export default {
+    state: {
+        menuInfo: {
+            name: 'home',
+            isShowHeader: false,
+            isShowFooter: false 
+        }
+    },
+    getters: {
+        getMenuInfo(state) {
+            return state.menuInfo
+        },
+    },
+    mutations: {
+        setMenuInfo(state, payload) {
+            state.menuInfo = payload;
+        }
+    }
+}

@@ -13,8 +13,7 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("https://www.hoohae.com"); // 정확한 출처 설정
-        config.addAllowedOrigin("https://hoohae.com"); // 정확한 출처 설정
+        config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addExposedHeader("*");
         config.addAllowedMethod("*");

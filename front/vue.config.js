@@ -12,5 +12,8 @@ module.exports = defineConfig({
         // pathRewrite: { '^/api': '' }, // 경로 재작성
       },
     },
+    client: {
+      webSocketURL: 'wss://localhost:3000/ws'
+    }
   },
 });

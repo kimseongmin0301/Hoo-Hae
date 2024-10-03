@@ -34,11 +34,11 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final DefaultOAuth2UserService defaultOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    private final CorsConfig corsConfig;
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors
-                        .configurationSource(corsConfigurationSource()))
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 // jwt 사용하므로 세션 X
@@ -59,31 +59,11 @@ public class SecurityConfig {
                         .successHandler(oAuth2SuccessHandler))
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilter(corsConfig.corsFilter());
 
         return http.build();
     }
-
-
-    /**
-     * CORS 처리
-     * @return
-     */
-    @Bean
-    protected CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("https://www.hoohae.com"); // 요청하는 출처
-        corsConfiguration.addAllowedOrigin("https://hoohae.com"); // 요청하는 출처
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.setAllowCredentials(true); // 자격 증명 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api/**", corsConfiguration);
-
-        return source;
-    }
-}
 
 /**
  * 권한 처리

@@ -72,7 +72,8 @@ public class SecurityConfig {
     @Bean
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("https://*.hoohae.com");
+        corsConfiguration.addAllowedOrigin("https://www.hoohae.com"); // 요청하는 출처
+        corsConfiguration.addAllowedOrigin("https://hoohae.com"); // 요청하는 출처
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setAllowCredentials(true); // 자격 증명 허용

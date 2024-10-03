@@ -14,7 +14,6 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("https://www.hoohae.com");
-        config.addAllowedOrigin("https://hoohae.com");
         config.addAllowedHeader("*");
         config.addExposedHeader("*");
         config.addAllowedMethod("*");

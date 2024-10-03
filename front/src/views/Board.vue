@@ -80,6 +80,7 @@
 import { ref } from 'vue'
 import LayoutHeader from '../components/LayoutHeader.vue'
 import axios from 'axios';
+import router from '@/router';
 
 const isBottomSheetOpen = ref(false); // 바텀 시트 열림 상태
 let category = ref(null);
@@ -124,21 +125,24 @@ const save =async (full)=> {
     formData.append('userId', 'userId');  // 실제 사용자 ID로 대체
     formData.append('nickname', 'nickname');  // 실제 닉네임으로 대체
     try {
-    const response = await axios.post('http://211.188.52.53:39880/api/board/save', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+      // cors오류나서 잠시 막아둠
+      
+      // const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrYWthb18zNzI4MzA5MTczIiwicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTcyNzc4NjUyMCwiZXhwIjoxNzMwMzc4NTIwfQ.kypmPwVroi5rSbyCQEauKdIA1Yo5ST_OI_YFZ5whsgk';
 
-    console.log('게시물 저장 성공:', response.data);
-    // 성공 후 필요한 추가 작업 수행 (예: 알림, 리다이렉트 등)
-  } catch (error) {
-    console.error('게시물 저장 실패:', error);
-    // 에러 처리
+      // const response = await axios.post('/api/board/list', formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //     Authorization: `Bearer ${token}`, // 토큰 추가
+      //   },
+      // });
+
+      // console.log('게시물 저장 성공:', response.data);
+      router.push('/feed');
+    } catch (error) {
+      console.error('게시물 저장 실패:', error);
+      // 에러 처리
+    }
   }
-
-  }
-
 }
 </script>
 

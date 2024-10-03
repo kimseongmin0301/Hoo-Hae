@@ -43,5 +43,4 @@ out/
 /back/src/main/resources/application.yml
 *.yml
 
-/front/dist
-/front/node_modules
+/front/node_modules/

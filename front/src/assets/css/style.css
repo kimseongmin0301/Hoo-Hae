@@ -135,84 +135,11 @@
 	color: #7E7EB5;
 }
 
-/* gnb */
-#gnb {
-	position: fixed;
-	z-index: 101;
-	width: 100vw;
-	height: 100vh;
-	top: 0;
-	left: -105%;
-	transition: left .5s;
-}
-#gnb.active {
-	left: 0;
-}
-#gnb .top{
-	position: relative;
-	background-color: #4F50C5;
-	height: 30%;
-}
-#gnb .top .clsBtn{
-	position: absolute;
-	top: 1em;
-	right: 1em;
-	width: 24px;
-	height: 24px;
-	background: url('../images/btn_close.svg');
-}
-#gnb .top div{
-	padding: 16% 0 0 1em;
-}
-#gnb .top div h2{
-	font-size: 28px;
-	font-weight: 300;
-	color: #fff;
-}
-#gnb .top div h2 span{
-	font-weight: 500;
-}
-#gnb .top div p{
-	margin: 0.625em 0 0;
-	font-size: 14px;
-	font-weight: 300;
-	color: #EEEFFA;
-}
-#gnb .menuList{
-	height: 70%;
-	background-color: #fff;
-}
-#gnb .menuList ul li a{
-	display: flex;
-	gap: 10px;
-	padding: 1.125em 0 1.125em 1em;
-}
-#gnb .menuList ul li a span{
-	color: #091D60;
-}
-#gnb .menuList ul li.active a{
-	background-color: #EEEFFA;
-}
-#gnb .menuList ul li.active a span{
-	color: #4F50C5;
-}
-#gnb .menuList > ul > li.on > a img.on{
-	display: block;
-}
-#gnb .menuList > ul > li.on > a img.off{
-	display: none;
-}
-#gnb .menuList > ul > li > a img.on{
-	display: none;
-}
-#gnb .menuList > ul > li > a img.off{
-	display: block;
-}
 /* content */
 #container .content{  /*main body*/
 	/* 여기에 padding top , min-height */
 	padding: 56px 0 ;
-	background-color: #F6F8FA;
+	background-color: #F6F7F9;
 	min-height: calc(100vh - 56px);
 }
 #container .content.white{ /*본문 body*/

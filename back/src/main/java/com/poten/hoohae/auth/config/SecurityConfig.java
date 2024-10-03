@@ -36,6 +36,7 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     private final CorsConfig corsConfig;
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
@@ -47,8 +48,8 @@ public class SecurityConfig {
                 .headers(header -> header
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers( "/api/v1/auth/**", "/oauth2/**", "/api/token/**").permitAll()
-                        .requestMatchers( "/api/board/**").hasRole("USER")
+                        .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/api/token/**").permitAll()
+                        .requestMatchers("/api/board/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 // oauth2 설정
@@ -64,6 +65,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+}
 
 /**
  * 권한 처리

@@ -18,7 +18,7 @@ public class BoardResponseDto {
     private String body;
     private Long vote;
     private Long commentCnt;
-    private Long thumbnail;
+    private String thumbnail;
     private String userId;
     private Long age;
     private Boolean isAdopte;
@@ -27,4 +27,6 @@ public class BoardResponseDto {
     private String type;
     private LocalDateTime createdAt;
     private List<String> images;
+    private Boolean isVoted;
+    private int totalCount;
 }

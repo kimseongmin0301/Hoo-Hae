@@ -19,7 +19,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name =  "BODY")
+    @Column(name = "BODY")
     private String body;
 
     @Column(name = "CATEGORY_ID")

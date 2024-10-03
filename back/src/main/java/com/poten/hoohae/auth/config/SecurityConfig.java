@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/api/token/**").permitAll()
-                        .requestMatchers("/api/board/**").hasRole("USER")
+                        .requestMatchers("/api/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 // oauth2 설정

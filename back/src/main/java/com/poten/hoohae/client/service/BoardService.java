@@ -1,14 +1,17 @@
 package com.poten.hoohae.client.service;
 
+import com.poten.hoohae.auth.domain.User;
+import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.common.Paging;
 import com.poten.hoohae.client.domain.Board;
-import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.domain.File;
+import com.poten.hoohae.client.dto.PagingDto;
 import com.poten.hoohae.client.dto.req.BoardRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import com.poten.hoohae.client.repository.FileRepository;
+import com.poten.hoohae.client.repository.VoteRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +37,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
     private final FileRepository fileRepository;
+    private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
 
     private final S3Service s3Service;
 
@@ -50,9 +56,9 @@ public class BoardService {
                         .id(b.getId())
                         .subject(b.getSubject())
                         .body(b.getBody())
-                        .vote(b.getVote())
+                        .vote(voteRepository.countVoteByBoardId(b.getId()))
                         .commentCnt(commentRepository.countCommentByBoardId(b.getId()))
-                        .thumbnail(1L)
+                        .thumbnail(b.getThumbnail())
                         .userId(b.getUserId())
                         .age(age)
                         .isAdopte(b.getAdoptionId() != null)
@@ -71,7 +77,13 @@ public class BoardService {
     }
 
     @Transactional
-    public Long saveBoard(BoardRequestDto dto) throws IOException {
+    public Long saveBoard(BoardRequestDto dto, String userId) throws IOException {
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+        User user = userOptional.get();
+
         List<MultipartFile> images = dto.getImage();
         String thumbnailUrl = "";
         List<Map<String, String>> imageUrls = new ArrayList<>();
@@ -87,8 +99,8 @@ public class BoardService {
 
         // 게시글 데이터 저장
         Board board = Board.builder()
-                .userId(dto.getUserId())
-                .nickname(dto.getNickname())
+                .userId(user.getUserId())
+                .nickname(user.getNickname())
                 .subject(dto.getSubject())
                 .body(dto.getBody())
                 .thumbnail(thumbnailUrl) // 썸네일 설정
@@ -120,12 +132,17 @@ public class BoardService {
                 .id(board.getId())
                 .subject(board.getSubject())
                 .body(board.getBody())
-                .vote(board.getVote())
                 .nickname(board.getNickname())
                 .age(board.getAge())
+                .isAdopte(board.getAdoptionId() != null ? true : false)
                 .commentCnt(commentRepository.countCommentByBoardId(id))
                 .images(fileRepository.findByName(id))
                 .createdAt(board.getCreatedAt())
+                .userId(board.getUserId())
+                .type(board.getType())
+                .category(board.getCategory())
+                .thumbnail(board.getThumbnail())
+                .isVoted(voteRepository.findByNickname(board.getId(), "board") != null ? true : false)
                 .build()
         ).orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + id));
     }
@@ -133,8 +150,7 @@ public class BoardService {
     @Transactional
     public Long updateBoard(Long id, BoardRequestDto reqDto, String userId){
         Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException());
-        System.out.println("board.getUserId() = " + board.getUserId());
-        System.out.println("userId = " + userId);
+
         if(!board.getUserId().equals(userId)) {
             throw new RuntimeException("수정권한없음");
         }
@@ -167,5 +183,74 @@ public class BoardService {
 
         boardRepository.delete(board);
         return id;
+    }
+
+    public List<BoardResponseDto> getTop5Boards (Long age) {
+        Pageable top5 = PageRequest.of(0, 5);
+        List<Object[]> boardList;
+        if(age != 0) {
+            boardList = boardRepository.findTop5ByAgeWithCommentAndVoteCount(age, top5);
+        } else {
+            boardList = boardRepository.findTop5ByCommentAndVoteCount(top5);
+        }
+
+        return boardList.stream().map(row -> {
+            Long id = (Long) row[0];
+            String subject = (String) row[1];
+            String thumbnail = (String) row[2];
+            String body = (String) row[3];
+            Long boardAge = (Long) row[4]; // age 필드 추가
+            String userId = (String) row[5]; // userId 필드 추가
+            String nickname = (String) row[6]; // nickname 필드 추가
+            Long category = (Long) row[7]; // category 필드 추가
+            String type = (String) row[8]; // type 필드 추가
+            LocalDateTime createdAt = (LocalDateTime) row[9]; // createdAt 필드 추가
+            Long commentCnt = (Long) row[10]; // commentCnt 필드
+            Long voteCnt = (Long) row[11]; // voteCnt 필드
+            int totalCount = ((Number) row[12]).intValue(); // 총 카운트
+
+            return BoardResponseDto.builder()
+                    .id(id)
+                    .subject(subject)
+                    .thumbnail(thumbnail)
+                    .body(body)
+                    .age(boardAge) // age를 DTO에 매핑
+                    .userId(userId) // userId를 DTO에 매핑
+                    .nickname(nickname) // nickname을 DTO에 매핑
+                    .category(category) // category를 DTO에 매핑
+                    .type(type) // type을 DTO에 매핑
+                    .createdAt(createdAt) // createdAt을 DTO에 매핑
+                    .commentCnt(commentCnt)
+                    .vote(voteCnt)
+                    .totalCount(totalCount)
+                    .build();
+        }).collect(Collectors.toList());
+    }
+
+    public Long countByCategory(Long category){
+        return boardRepository.countBoardsByCategory(category);
+    }
+
+    public List<BoardResponseDto> getBoardCategoryList(int page, Long category) {
+        Pageable pageable = PageRequest.of(Paging.getPage(page, this.countByCategory(category)) - 1, 5, Sort.by("createdAt").descending());
+        Page<Board> board = boardRepository.findByCategory(pageable, category);
+
+        return board.getContent().stream()
+                .map(b -> BoardResponseDto.builder()
+                        .id(b.getId())
+                        .subject(b.getSubject())
+                        .body(b.getBody())
+                        .vote(voteRepository.countVoteByBoardId(b.getId()))
+                        .commentCnt(commentRepository.countCommentByBoardId(b.getId()))
+                        .thumbnail(b.getThumbnail())
+                        .userId(b.getUserId())
+                        .age(b.getAge())
+                        .isAdopte(b.getAdoptionId() != null)
+                        .nickname(b.getNickname())
+                        .category(b.getCategory())
+                        .type(b.getType())
+                        .createdAt(b.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

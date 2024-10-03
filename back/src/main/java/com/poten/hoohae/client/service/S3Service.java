@@ -4,14 +4,13 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.poten.hoohae.client.config.S3Config;
+import com.poten.hoohae.client.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class S3Service {
@@ -42,39 +41,54 @@ public class S3Service {
         }
     }
 
-    public List<String> uploadFiles(List<MultipartFile> files) throws IOException {
-        List<String> fileUrls = new ArrayList<>(); // 업로드된 파일 URL을 저장할 리스트
+    public List<Map<String, String>> uploadFiles(List<MultipartFile> files) throws IOException {
+        List<Map<String, String>> fileUrls = new ArrayList<>();
         if (files == null || files.isEmpty()) {
-            return fileUrls; // 에러를 발생시키지 않고 빈 리스트 반환
+            return fileUrls;
         }
 
         for (MultipartFile file : files) {
+            Map<String, String> map = new HashMap<>();
             if (file.isEmpty()) {
-                continue; // 빈 파일은 건너뜁니다.
+                System.out.println("Skipping empty file.");
+                continue;
             }
 
             String originalFileName = file.getOriginalFilename();
-            String fileName = String.valueOf(UUID.randomUUID()); // UUID로 파일 이름 생성
+            String fileName = String.valueOf(UUID.randomUUID());
 
             String fileExtension = "";
             if (originalFileName != null) {
-                String[] parts = originalFileName.split("\\."); // '.'을 기준으로 분리
+                String[] parts = originalFileName.split("\\.");
                 if (parts.length > 1) {
-                    fileExtension = parts[parts.length - 1].toLowerCase(); // 마지막 요소를 가져와서 소문자로 변환
+                    fileExtension = parts[parts.length - 1].toLowerCase();
                 }
             }
+
+            // 로그 추가
+            System.out.println("Processing file: " + originalFileName + " with extension: " + fileExtension);
 
             if (isImageExtension(fileExtension)) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentLength(file.getSize());
 
-                // S3에 파일 업로드
+                // 파일 업로드 시 로그 추가
+                System.out.println("Uploading to S3: " + fileName);
+
                 s3.putObject(bucketName, fileName, file.getInputStream(), metadata);
                 setObjectACL(bucketName, fileName);
 
-                // 파일 URL 생성
                 String fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
-                fileUrls.add(fileUrl);
+                map.put("link", fileUrl);
+                map.put("name", fileName);
+                map.put("orgName", file.getOriginalFilename());
+
+                fileUrls.add(map);
+
+                // 파일이 정상적으로 리스트에 추가되었는지 로그로 확인
+                System.out.println("Added file URL: " + fileUrl);
+            } else {
+                System.out.println("Skipping non-image file: " + originalFileName);
             }
         }
 

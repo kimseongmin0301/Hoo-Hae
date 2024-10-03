@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -25,4 +26,5 @@ public class BoardResponseDto {
     private Long category;
     private String type;
     private LocalDateTime createdAt;
+    private List<String> images;
 }

@@ -25,11 +25,11 @@ public class File {
     @Column(name = "ORG_NAME")
     private String orgName;
 
-    @Column(name = "TYPE")
-    private String type;
+    @Column(name = "LINK")
+    private String link;
 
-    @Column(name = "SIZE")
-    private Long size;
+    @Column(name = "BOARD_ID")
+    private Long boardId;
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;

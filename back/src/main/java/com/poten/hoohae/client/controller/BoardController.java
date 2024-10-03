@@ -7,6 +7,7 @@ import com.poten.hoohae.client.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class BoardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BoardResponseDto> getBoardId(@PathVariable(name = "id") Long id) {
-        BoardResponseDto dto = new BoardResponseDto();
+        BoardResponseDto dto = boardService.getBoard(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -50,13 +51,16 @@ public class BoardController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<BoardResponseDto> updateBoard(@PathVariable(name = "id") long id){
-        BoardResponseDto dto = new BoardResponseDto();
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<Long> updateBoard(@PathVariable(name = "id") long id, @ModelAttribute BoardRequestDto dto, Authentication authentication){
+        String userId = authentication.getName();
+        Long updateId = boardService.updateBoard(id, dto, userId);
+        return ResponseEntity.ok(updateId);
     }
 
     @DeleteMapping("/delete/{id}")
-    public Long deleteBoard(@PathVariable(name = "id") long id) {
-        return 1L;
+    public ResponseEntity<Long> deleteBoard(@PathVariable(name = "id") long id, Authentication authentication) {
+        String userId = authentication.getName();
+        Long deleteId = boardService.deleteBoard(id, userId);
+        return ResponseEntity.ok(deleteId);
     }
 }

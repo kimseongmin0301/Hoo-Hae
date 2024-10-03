@@ -37,6 +37,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addCookie(cookie);
 
         // 리다이렉트
-        response.sendRedirect("https://hoohae.com/main");
+        response.sendRedirect("https://hoohae.com");
     }
 }

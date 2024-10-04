@@ -79,7 +79,7 @@ axios.get('/api/board/list', {
   }
 
   .text-wrapper {
-    font-family: "Pretendarde-Medium", Helvetica;
+    font-family: "Pretendard-Medium", Helvetica;
     font-weight: 500;
     color: #A7A7A7;
     font-size: 18px;
@@ -90,7 +90,7 @@ axios.get('/api/board/list', {
   }
 
   .div {
-    font-family: "Pretendarde-Medium", Helvetica;
+    font-family: "Pretendard-Medium", Helvetica;
     font-weight: 600;
     color: #FF8F39;
     font-size: 18px;

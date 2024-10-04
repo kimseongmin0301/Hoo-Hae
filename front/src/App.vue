@@ -1,25 +1,18 @@
 <template>
- <section id="container">
+  <section id="container">
 		<router-view />
-		<LayoutFooter msg="홍길동" v-if="getMenuInfo.isShowFooter" />
- </section>
+    <LayoutFooter msg="홍길동" v-if="getMenuInfo.isShowFooter" />
+  </section>
 </template>
 
-<script>
-import LayoutFooter from './components/LayoutFooter.vue'
-import { mapGetters} from "vuex";
+<script setup>
+import { computed } from 'vue';
+import { useStore } from 'vuex';
+import LayoutFooter from './components/LayoutFooter.vue';
 
-export default {
-  name: 'App',
-  components: {
-	LayoutFooter,
-  },
-  computed: {
-    ...mapGetters([
-      "getMenuInfo"
-    ]),
-  },
-}
+const store = useStore();
+const getMenuInfo = computed(() => store.getters.getMenuInfo);
+
 </script>
 
 <style>

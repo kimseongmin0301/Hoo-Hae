@@ -36,10 +36,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(cookie);
 
-        // Referer 헤더를 사용하여 원래 요청을 보낸 페이지로 리다이렉트
-        String redirectUri = request.getHeader("Referer") + "/onboarding";
-        System.out.println("redirectUri = " + redirectUri);
-        
-        response.sendRedirect(redirectUri);
+        response.sendRedirect("https://hoohae.com/onboarding");
     }
 }

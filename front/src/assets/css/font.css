@@ -1,6 +1,30 @@
 @charset "utf-8";
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;600&display=swap');
 
+/* 로컬 Pretendard 폰트들 불러오기 */
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('/src/assets/Pretendard-Regular.otf') format('opentype');
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Medium';
+    src: url('/src/assets/Pretendard-Medium.otf') format('opentype');
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-SemiBold';
+    src: url('/src/assets/Pretendard-SemiBold.otf') format('opentype');
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('/src/assets/Pretendard-Bold.otf') format('opentype');
+    font-style: normal;
+}
+
+/* 글로벌 스타일 설정 */
 body {
-	font-family: "Noto Sans KR", sans-serif; /* 영문 타입, 한글 타입, 유형 */
+    font-family: "Pretendard", "Noto Sans KR", sans-serif; /* Pretendard 폰트 우선 적용 */
 }

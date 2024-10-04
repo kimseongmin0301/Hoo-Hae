@@ -3,14 +3,33 @@
 /* main */
 #container{
 	position: relative;
+	min-height: 100dvh;
+	padding: 56px 0;
+	display: flex;
+	flex-direction: column;
+}
+
+#body {
+	flex-grow: 1;
+	position: relative;
+	overflow: scroll;
+	overflow-x: hidden;
+}
+
+#body .overflow {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 }
 
 /* header */
 #header{
-	width: 100%;
 	position: fixed;
 	top: 0;
 	left: 0;
+	right: 0;
 	z-index: 100;
 	background-color: #fff;
 }
@@ -82,10 +101,10 @@
 
 /* footer */
 #footer{
-	position: fixed;
-	bottom: 0;
+	position: absolute;
 	left: 0;
-	width: 100%;
+	right: 0;
+	bottom: 0;
 	height: 56px;
 	box-shadow: 0px -3px 10px #00000014;
 	z-index: 1;
@@ -138,9 +157,7 @@
 /* content */
 #container .content{  /*main body*/
 	/* 여기에 padding top , min-height */
-	padding: 56px 0 ;
 	background-color: #F6F7F9;
-	min-height: calc(100vh - 56px);
 }
 #container .content.white{ /*본문 body*/
 	background-color: #fff;

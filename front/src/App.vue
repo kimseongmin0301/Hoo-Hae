@@ -1,6 +1,10 @@
 <template>
  <section id="container">
-		<router-view />
+   <div id="body">
+     <div class="overflow">
+		    <router-view />
+     </div>
+   </div>
 		<LayoutFooter msg="홍길동" v-if="getMenuInfo.isShowFooter" />
  </section>
 </template>

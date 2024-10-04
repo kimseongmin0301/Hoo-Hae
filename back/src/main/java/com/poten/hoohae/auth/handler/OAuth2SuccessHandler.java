@@ -36,7 +36,17 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         response.addCookie(cookie);
 
+        String redirectUri = request.getParameter("redirectUri");  // 클라이언트가 전달한 redirectUri
+        if (redirectUri == null || redirectUri.isEmpty()) {
+            // Referer 헤더를 사용하여 원래 요청을 보낸 페이지로 리다이렉트
+            redirectUri = request.getHeader("Referer");
+        }
+
+        if (redirectUri == null || redirectUri.isEmpty()) {
+                    redirectUri = "https://hoohae.com";  // 로컬에서 요청을 보냈던 페이지로 리다이렉트
+        }
+
         // 리다이렉트
-        response.sendRedirect("https://hoohae.com");
+        response.sendRedirect(redirectUri);
     }
 }

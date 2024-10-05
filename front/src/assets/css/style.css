@@ -8,11 +8,12 @@
 /* header */
 #header{
 	width: 100%;
-	position: fixed;
+	height: 88px;
+	position: absolute;
 	top: 0;
 	left: 0;
 	z-index: 100;
-	background-color: #fff;
+	/* background-color: #fff; */
 }
 #header .inner {
 	position: relative;
@@ -20,15 +21,7 @@
 	align-items: center;
 	justify-content: center;
 	padding: 0 1em;
-	height: 55px;
-	border-bottom: 1px solid #D0D5DD;
-}
-#header .inner .menuBtn{
-	position: absolute;
-	left: 1em;
-	width: 24px;
-	height: 24px;
-	background: url('../images/btn_menu.svg') no-repeat ;
+	height: 88px;
 }
 #header .inner .alrmBtn{
 	position: absolute;
@@ -37,37 +30,12 @@
 	height: 24px;
 	background: url('../images/btn_alret.svg') no-repeat ;
 }
-#header .inner .hambgBtn{
-	position: absolute;
-	right: 1em;
-	width: 24px;
-	height: 24px;
-	background: url('../images/btn_menu.svg') no-repeat ;
-}
-#header .inner .alrmBtn::before{
-	position: absolute;
-	content: '';
-	top: -5px;
-	right: -3px;
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	background-color: var(--color, none);
-}
-#header .inner .alrmBtn::after{
-	position: absolute;
-	content: attr(data-value);
-	top: -5px;
-	right: 2px;
-	color: #fff;
-	font-size: 11px;
-	font-weight: 500;
-}
 #header .inner .backBtn{
 	position: absolute;
-	left: 1em;
 	width: 24px;
 	height: 24px;
+	left: 20px;
+    top: 54px;
 	background: url('../images/btn_back.svg') no-repeat ;
 }
 #header .inner h1{

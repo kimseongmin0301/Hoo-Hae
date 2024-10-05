@@ -1,40 +1,44 @@
 <template>
   <div>
     <OnboardingPopup v-if="isSaved"/>
-    <div v-else class="content white">
-      <div class="inner">
-        <div class="plain-text">
-          <p class="text-1">나의 연령대는?</p>
-          <p class="text-2">주변 친구들의 후회를 먼저 보여줄게!</p>
-        </div>
-        <div class="cards">
-          <div v-if="age=='10'" class="card-one" id="card-one-on">
-            <p class="age-text-one-on">10대</p>
-            <img class="age-img-one" src="../assets/images/10age-2.svg" alt="10대">
+    <div v-else>
+      <LayoutHeader title="" :backBtn="false" :alrmBtn="false"/>
+      <div class="content white">
+        <div class="inner">
+          <Ellipse :number="2"></Ellipse>
+          <div class="plain-text">
+            <p class="text-1">나의 연령대는?</p>
+            <p class="text-2">주변 친구들의 후회를 먼저 보여줄게!</p>
           </div>
-          <div v-else class="card-one" id="card-off" @click="ontenage">
-            <p class="age-text-off">10대</p>
-            <img class="age-img-one" src="../assets/images/10age-1.svg" alt="10대">
+          <div class="cards">
+            <div v-if="age=='10'" class="card-one" id="card-one-on">
+              <p class="age-text-one-on">10대</p>
+              <img class="age-img-one" src="../assets/images/10age-2.svg" alt="10대">
+            </div>
+            <div v-else class="card-one" id="card-off" @click="ontenage">
+              <p class="age-text-off">10대</p>
+              <img class="age-img-one" src="../assets/images/10age-1.svg" alt="10대">
+            </div>
+            <div v-if="age=='20'" class="card-two" id="card-two-on">
+              <p class="age-text-two-on">20대</p>
+              <img class="age-img-two" src="../assets/images/20age-2.svg" alt="20대">
+            </div>
+            <div v-else class="card-two" id="card-off" @click="ontwentyage">
+              <p class="age-text-off">20대</p>
+              <img class="age-img-two" src="../assets/images/20age-1.svg" alt="20대">
+            </div>
+            <div v-if="age=='30'" class="card-three" id="card-three-on" @click="onthirtyage">
+              <p class="age-text-three-on">30대</p>
+              <img class="age-img-three" src="../assets/images/30age-2.svg" alt="30대">
+            </div>  
+            <div v-else class="card-three" id="card-off" @click="onthirtyage">
+              <p class="age-text-off">30대</p>
+              <img class="age-img-three" src="../assets/images/30age-1.svg" alt="30대">
+            </div>      
           </div>
-          <div v-if="age=='20'" class="card-two" id="card-two-on">
-            <p class="age-text-two-on">20대</p>
-            <img class="age-img-two" src="../assets/images/20age-2.svg" alt="20대">
+          <div>
+            <input type="button" :class="checked ? 'orange-btn onboard':'gray-btn onboard'"  value="했어!" @click="saveAndNext()"/>
           </div>
-          <div v-else class="card-two" id="card-off" @click="ontwentyage">
-            <p class="age-text-off">20대</p>
-            <img class="age-img-two" src="../assets/images/20age-1.svg" alt="20대">
-          </div>
-          <div v-if="age=='30'" class="card-three" id="card-three-on" @click="onthirtyage">
-            <p class="age-text-three-on">30대</p>
-            <img class="age-img-three" src="../assets/images/30age-2.svg" alt="30대">
-          </div>  
-          <div v-else class="card-three" id="card-off" @click="onthirtyage">
-            <p class="age-text-off">30대</p>
-            <img class="age-img-three" src="../assets/images/30age-1.svg" alt="30대">
-          </div>      
-        </div>
-        <div>
-          <input type="button" :class="checked ? 'orange-btn onboard':'gray-btn onboard'"  value="했어!" @click="saveAndNext()"/>
         </div>
       </div>
     </div>
@@ -45,7 +49,9 @@
 import { ref } from 'vue'
 import axios from 'axios';
 import router from '@/router';
+import LayoutHeader from '../components/LayoutHeader.vue'
 import OnboardingPopup from '../components/OnboardingPopup.vue'
+import Ellipse from '../components/Ellipse.vue'
 
 let age = ref(null); // 선택한 연령대
 let checked = ref(false); // 체크 여부
@@ -158,21 +164,25 @@ const saveAndNext = () => { // 저장후 다음 페이지
 }
 
   .plain-text {
-    left: 20px;
     text-align: left;
-    position:absolute;
   }
 
   .text-1 {
     color: #222222;
     font-family: "Pretendard-SemiBold", Helvetica;
     font-size: 32px;
+    top: 180px;
+    left: 20px;
+    position: absolute;
   }
 
   .text-2 {
     color: #7A7A7A;
     font-family: "Pretendard-Medium", Helvetica;
     font-size: 18px;
+    top: 226px;
+    left: 20px;
+    position: absolute;
   }
 
   .age-text-one-on {

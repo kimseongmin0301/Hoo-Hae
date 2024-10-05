@@ -1,23 +1,29 @@
 <template>
-    <div class="content white">
-      <div class="inner">
-        <div class="plain-text">
-          <p class="text-1">나를 설정해봐!</p>
-          <!-- <p class="text-2">주변 친구들의 후회를 먼저 보여줄게!</p> -->
+    <div>
+        <LayoutHeader title="" :backBtn="true" :alrmBtn="false"/>
+        <div class="content white">
+          <div class="inner">
+            <Ellipse :number="3"></Ellipse>
+            <div class="plain-text">
+              <p class="text-1">나를 설정해봐!</p>
+              <!-- <p class="text-2">주변 친구들의 후회를 먼저 보여줄게!</p> -->
+            </div>
+            <div class="cards">
+              <div class="card-one" id="card-one-on">
+                  <img class="age-img-one" src="../assets/images/10age-2.svg" alt="10대">
+              </div>   
+            </div>
+            <div>
+              <input type="button" :class="checked ? 'orange-btn onboard':'gray-btn onboard'"  value="완벽해!" @click="saveAndNext()"/>
+            </div>
+          </div>
         </div>
-        <div class="cards">
-          <div class="card-one" id="card-one-on">
-            <img class="age-img-one" src="../assets/images/10age-2.svg" alt="10대">
-          </div>   
-        </div>
-        <div>
-          <input type="button" :class="checked ? 'orange-btn onboard':'gray-btn onboard'"  value="완벽해!" @click="saveAndNext()"/>
-        </div>
-      </div>
     </div>
   </template>
     
   <script setup>
+  import LayoutHeader from '../components/LayoutHeader.vue'
+  import Ellipse from '../components/Ellipse.vue'
   import { ref } from 'vue'
   import axios from 'axios';
   import router from '@/router';

@@ -1,15 +1,17 @@
 <template>
 	<header id="header">
-	  <div class="inner">
-		<!-- <input type="hidden" name="alrmCnt" id="alrmCnt" value="1" /> -->
-		<button v-if="backBtn" type="button" class="menuBtn"></button>
-		<button v-if="alrmBtn" type="button" class="alrmBtn" @click="location.href='#'"></button>
-		<h1>{{ title }}</h1>
-	  </div>
+		<div class="inner">
+			<!-- <input type="hidden" name="alrmCnt" id="alrmCnt" value="1" /> -->
+			<button v-if="backBtn" type="button" class="backBtn"></button>
+			<button v-if="alrmBtn" type="button" class="alrmBtn" @click="location.href='#'"></button>
+			<h1>{{ title }}</h1>
+		</div>
 	</header>
-  </template>
+</template>
   
-  <script setup>
+<script setup>
+import { defineProps } from 'vue';
+
   defineProps({
 	title: String,
 	backBtn: {
@@ -21,12 +23,9 @@
 		default: false, // 기본값을 true로 설정
 	},
   });
-
-
+</script>
   
+<style scoped>
 
-
-  </script>
-  
-  <style scoped></style>
+</style>
   

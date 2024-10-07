@@ -28,6 +28,9 @@ public class User {
     @Column(name = "AGE")
     private Long age;
 
+    @Column(name = "EMAIL")
+    private String email;
+
     @Column(name = "STATUS")
     private Long status;
 

@@ -23,8 +23,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-        String userId = oAuth2User.getName();
-        String token = jwtProvider.create(userId);
+        String email = oAuth2User.getName();
+        String token = jwtProvider.create(email);
 
         // 쿠키 설정
         Cookie cookie = new Cookie("hoohae_jwt_token", token);

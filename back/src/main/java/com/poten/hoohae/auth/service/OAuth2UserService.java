@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,18 +28,21 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest req) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(req);
-
+        Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
+        String email = (String) kakaoAccount.get("email");
         String userId = "kakao_" + oAuth2User.getAttributes().get("id");
 
-        Optional<User> existingUser = userRepository.findByUserId(userId);
+
+        Optional<User> existingUser = userRepository.findByEmail(userId);
 
         if (existingUser.isEmpty()) {
             User user = User.builder()
                     .userId(userId)
+                    .email(email)
                     .build();
             userRepository.save(user);
         }
 
-        return new CustomOAuth2User(userId);
+        return new CustomOAuth2User(email);
     }
 }

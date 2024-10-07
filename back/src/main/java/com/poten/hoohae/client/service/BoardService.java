@@ -78,7 +78,7 @@ public class BoardService {
 
     @Transactional
     public Long saveBoard(BoardRequestDto dto, String userId) throws IOException {
-        Optional<User> userOptional = userRepository.findByUserId(userId);
+        Optional<User> userOptional = userRepository.findByEmail(userId);
         if (!userOptional.isPresent()) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }

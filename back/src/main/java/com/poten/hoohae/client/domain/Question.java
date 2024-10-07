@@ -22,8 +22,8 @@ public class Question {
     @Column(name = "BODY")
     private String body;
 
-    @Column(name = "CATEGORY_ID")
-    private String categoryId;
+    @Column(name = "CATEGORY")
+    private String category;
 
     @Column(name = "COUNT")
     private Long count;

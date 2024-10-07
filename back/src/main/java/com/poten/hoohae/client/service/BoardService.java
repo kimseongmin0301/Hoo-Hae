@@ -2,16 +2,14 @@ package com.poten.hoohae.client.service;
 
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
+import com.poten.hoohae.client.common.DateFormat;
 import com.poten.hoohae.client.common.Paging;
 import com.poten.hoohae.client.domain.Board;
 import com.poten.hoohae.client.domain.File;
 import com.poten.hoohae.client.dto.PagingDto;
 import com.poten.hoohae.client.dto.req.BoardRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
-import com.poten.hoohae.client.repository.BoardRepository;
-import com.poten.hoohae.client.repository.CommentRepository;
-import com.poten.hoohae.client.repository.FileRepository;
-import com.poten.hoohae.client.repository.VoteRepository;
+import com.poten.hoohae.client.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +37,7 @@ public class BoardService {
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
+    private final ScrapRepository scrapRepository;
 
     private final S3Service s3Service;
 
@@ -65,7 +64,7 @@ public class BoardService {
                         .nickname(b.getNickname())
                         .category(b.getCategory())
                         .type(b.getType())
-                        .createdAt(b.getCreatedAt())
+                        .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -137,11 +136,12 @@ public class BoardService {
                 .isAdopte(board.getAdoptionId() != null ? true : false)
                 .commentCnt(commentRepository.countCommentByBoardId(id))
                 .images(fileRepository.findByName(id))
-                .createdAt(board.getCreatedAt())
+                .createdAt(DateFormat.yyyyMMdd(board.getCreatedAt()))
                 .userId(board.getUserId())
                 .type(board.getType())
                 .category(board.getCategory())
                 .thumbnail(board.getThumbnail())
+                .isBookmark(scrapRepository.findByBoardId(board.getId()) != null ? true : false)
                 .isVoted(voteRepository.findByNickname(board.getId(), "board") != null ? true : false)
                 .build()
         ).orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + id));
@@ -202,7 +202,7 @@ public class BoardService {
             Long boardAge = (Long) row[4]; // age 필드 추가
             String userId = (String) row[5]; // userId 필드 추가
             String nickname = (String) row[6]; // nickname 필드 추가
-            Long category = (Long) row[7]; // category 필드 추가
+            String category = (String) row[7]; // category 필드 추가
             String type = (String) row[8]; // type 필드 추가
             LocalDateTime createdAt = (LocalDateTime) row[9]; // createdAt 필드 추가
             Long commentCnt = (Long) row[10]; // commentCnt 필드
@@ -214,12 +214,12 @@ public class BoardService {
                     .subject(subject)
                     .thumbnail(thumbnail)
                     .body(body)
-                    .age(boardAge) // age를 DTO에 매핑
-                    .userId(userId) // userId를 DTO에 매핑
-                    .nickname(nickname) // nickname을 DTO에 매핑
-                    .category(category) // category를 DTO에 매핑
-                    .type(type) // type을 DTO에 매핑
-                    .createdAt(createdAt) // createdAt을 DTO에 매핑
+                    .age(boardAge)
+                    .userId(userId)
+                    .nickname(nickname)
+                    .category(category)
+                    .type(type)
+                    .createdAt(DateFormat.yyyyMMdd(createdAt))
                     .commentCnt(commentCnt)
                     .vote(voteCnt)
                     .totalCount(totalCount)
@@ -227,11 +227,11 @@ public class BoardService {
         }).collect(Collectors.toList());
     }
 
-    public Long countByCategory(Long category){
+    public Long countByCategory(String category){
         return boardRepository.countBoardsByCategory(category);
     }
 
-    public List<BoardResponseDto> getBoardCategoryList(int page, Long category) {
+    public List<BoardResponseDto> getBoardCategoryList(int page, String category) {
         Pageable pageable = PageRequest.of(Paging.getPage(page, this.countByCategory(category)) - 1, 5, Sort.by("createdAt").descending());
         Page<Board> board = boardRepository.findByCategory(pageable, category);
 
@@ -249,7 +249,7 @@ public class BoardService {
                         .nickname(b.getNickname())
                         .category(b.getCategory())
                         .type(b.getType())
-                        .createdAt(b.getCreatedAt())
+                        .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                         .build())
                 .collect(Collectors.toList());
     }

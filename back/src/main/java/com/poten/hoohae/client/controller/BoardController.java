@@ -41,7 +41,7 @@ public class BoardController {
     }
 
     @GetMapping("/category/list")
-    public ResponseEntity<PagingDto> getCategoryList(@RequestParam(value ="category", defaultValue = "1") Long category, @RequestParam(value = "page", defaultValue = "1") int page) {
+    public ResponseEntity<PagingDto> getCategoryList(@RequestParam(value ="category", defaultValue = "1") String category, @RequestParam(value = "page", defaultValue = "1") int page) {
         log.info("category list");
         long totalItemCnt = boardService.countByCategory(category);
         PagingDto pagingDto = PagingDto.builder()

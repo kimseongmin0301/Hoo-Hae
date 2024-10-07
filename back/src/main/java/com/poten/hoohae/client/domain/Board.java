@@ -44,7 +44,7 @@ public class Board {
     private Long age;
 
     @Column(name = "CATEGORY")
-    private Long category;
+    private String category;
 
     @Column(name = "TYPE")
     private String type;

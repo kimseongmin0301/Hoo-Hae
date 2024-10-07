@@ -23,10 +23,11 @@ public class BoardResponseDto {
     private Long age;
     private Boolean isAdopte;
     private String nickname;
-    private Long category;
+    private String category;
     private String type;
-    private LocalDateTime createdAt;
+    private String createdAt;
     private List<String> images;
     private Boolean isVoted;
     private int totalCount;
+    private Boolean isBookmark;
 }

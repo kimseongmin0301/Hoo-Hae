@@ -25,6 +25,6 @@ public class Question {
     @Column(name = "CATEGORY")
     private String category;
 
-    @Column(name = "COUNT")
+    @Column(name = "COUNT", columnDefinition = "BIGINT DEFAULT 0")
     private Long count;
 }

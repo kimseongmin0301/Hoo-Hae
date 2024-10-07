@@ -16,4 +16,13 @@ public class Scrap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "USER_ID")
+    private Long userId;
+
+    @Column(name = "BORAD_ID")
+    private Long boardId;
+
+    @Column(name = "CATEGORY")
+    private String category;
 }

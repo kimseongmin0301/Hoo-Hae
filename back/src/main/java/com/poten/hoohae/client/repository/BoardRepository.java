@@ -17,11 +17,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findAllByAge(Pageable pageable, Long age);
 
-    Page<Board> findByCategory(Pageable pageable, Long category);
+    Page<Board> findByCategory(Pageable pageable, String category);
 
     long countBoardsByAge(long age);
 
-    long countBoardsByCategory(long category);
+    long countBoardsByCategory(String category);
 
     @Query("SELECT b.id, b.subject, b.thumbnail, b.body, b.age, b.userId, b.nickname, b.category, b.type, b.createdAt," +
             "COUNT(c.id) AS commentCnt, " +

@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class CommentRequestDto {
     private Long boardId;
-    private Long userId;
+    private String userId;
     private String nickname;
     private Long age;
     private String body;

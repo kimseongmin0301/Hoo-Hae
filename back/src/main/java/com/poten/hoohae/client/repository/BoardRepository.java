@@ -45,4 +45,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "GROUP BY b.id " +
             "ORDER BY (COUNT(DISTINCT c.id) + COUNT(DISTINCT v.id)) DESC")
     List<Object[]> findTop5ByCommentAndVoteCount(Pageable pageable);
+
+    long countByUserIdAndAdoptionIdIsNotNull(String userId);
+
+    long countByUserId(String userId);
+
+    @Query("SELECT b.category, COUNT(b) FROM Board b WHERE b.userId = :userId GROUP BY b.category ORDER BY COUNT(b) DESC")
+    List<Object[]> countByUserIdGroupByCategoryTop3(@Param("userId") String userId, Pageable pageable);
 }

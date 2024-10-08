@@ -18,7 +18,7 @@ public class Scrap {
     private Long id;
 
     @Column(name = "USER_ID")
-    private Long userId;
+    private String userId;
 
     @Column(name = "BORAD_ID")
     private Long boardId;

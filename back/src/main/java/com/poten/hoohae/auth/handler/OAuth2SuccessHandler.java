@@ -35,7 +35,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         cookie.setMaxAge(720);
 
         response.addCookie(cookie);
-
+        System.out.println("token =" + token);
         response.sendRedirect("https://hoohae.com/onboarding");
     }
 }

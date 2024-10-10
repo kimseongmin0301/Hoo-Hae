@@ -33,7 +33,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String userId = "kakao_" + oAuth2User.getAttributes().get("id");
 
 
-        Optional<User> existingUser = userRepository.findByEmail(userId);
+        Optional<User> existingUser = userRepository.findByUserId(userId);
 
         if (existingUser.isEmpty()) {
             User user = User.builder()

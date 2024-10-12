@@ -41,13 +41,19 @@ public class BoardService {
 
     private final S3Service s3Service;
 
-    public List<BoardResponseDto> getBoardList(int page, Long age) {
+    public List<BoardResponseDto> getBoardList(int page, Long age, String category) {
         Page<Board> board;
         Pageable pageable = PageRequest.of(Paging.getPage(page, this.totalBoardCnt(age)) - 1, 5, Sort.by("createdAt").descending());
         if (age == null) {
-            board = boardRepository.findAll(pageable);
+            if(category == null)
+                board = boardRepository.findAll(pageable);
+            else
+                board = boardRepository.findByCategory(pageable, category);
         } else {
-            board = boardRepository.findAllByAge(pageable, age);
+            if(category == null)
+                board = boardRepository.findAllByAge(pageable, age);
+            else
+                board = boardRepository.findAllByAgeAndCategory(pageable, age, category);
         }
 
         return board.getContent().stream()
@@ -59,7 +65,7 @@ public class BoardService {
                         .commentCnt(commentRepository.countCommentByBoardId(b.getId()))
                         .thumbnail(b.getThumbnail())
                         .userId(b.getUserId())
-                        .age(age)
+                        .age(b.getAge())
                         .isAdopte(b.getAdoptionId() != null)
                         .nickname(b.getNickname())
                         .category(b.getCategory())

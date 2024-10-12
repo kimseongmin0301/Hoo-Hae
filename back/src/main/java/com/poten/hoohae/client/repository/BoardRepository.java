@@ -19,6 +19,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findByCategory(Pageable pageable, String category);
 
+    Page<Board> findAllByAgeAndCategory(Pageable pageable, Long age, String category);
+
     long countBoardsByAge(long age);
 
     long countBoardsByCategory(String category);

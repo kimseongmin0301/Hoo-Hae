@@ -85,7 +85,7 @@ public class BoardService {
                             .thumbnail(b.getThumbnail())
                             .userId(b.getUserId())
                             .age(b.getAge())
-                            .isVoted()
+                            .isVoted(null)
                             .isAdopte(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())

@@ -4,10 +4,7 @@ import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.common.DateFormat;
 import com.poten.hoohae.client.common.Paging;
-import com.poten.hoohae.client.domain.Board;
-import com.poten.hoohae.client.domain.File;
-import com.poten.hoohae.client.domain.QBoard;
-import com.poten.hoohae.client.domain.QComment;
+import com.poten.hoohae.client.domain.*;
 import com.poten.hoohae.client.dto.req.BoardRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
 import com.poten.hoohae.client.repository.*;
@@ -54,6 +51,7 @@ public class BoardService {
     private final ScrapRepository scrapRepository;
     private final S3Service s3Service;
     private final JPAQueryFactory queryFactory;
+    private final ImageRepository imageRepository;
 
     public List<BoardResponseDto> getBoardList(int page, Long age, String category, String sort) {
         QBoard board = QBoard.board;
@@ -75,6 +73,9 @@ public class BoardService {
                 .map(b -> {
                     long commentCnt = commentRepository.countCommentByBoardId(b.getId());
                     long voteCnt = b.getVote();
+                    Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
+                    User user = optionalUser.get();
+                    String img = imageRepository.findByImage(user.getCharacterId());
                     return BoardResponseDto.builder()
                             .id(b.getId())
                             .subject(b.getSubject())
@@ -89,6 +90,7 @@ public class BoardService {
                             .category(b.getCategory())
                             .type(b.getType())
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+                            .img(img)
                             .build();
                 })
                 .collect(Collectors.toList());

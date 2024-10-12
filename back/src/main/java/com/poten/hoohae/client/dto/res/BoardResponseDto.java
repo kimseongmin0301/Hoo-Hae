@@ -31,6 +31,7 @@ public class BoardResponseDto {
     private List<String> images;
     private Boolean isVoted;
     private Boolean isBookmark;
+    private String img;
 
     @QueryProjection
     public BoardResponseDto(Long id, String subject, String body, String thumbnail,

@@ -19,4 +19,7 @@ public class Category {
 
     @Column(name = "NAME")
     private String name;
+
+    @Column(name = "IMAGE")
+    private String image;
 }

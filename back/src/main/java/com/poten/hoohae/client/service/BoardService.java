@@ -184,7 +184,7 @@ public class BoardService {
     public Long deleteBoard(Long id, String userId) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException());
         if(!board.getUserId().equals(userId)) {
-            throw new RuntimeException("수정권한없음");
+            throw new RuntimeException("삭제권한없음");
         }
 
         boardRepository.delete(board);
@@ -213,7 +213,7 @@ public class BoardService {
             LocalDateTime createdAt = (LocalDateTime) row[9]; // createdAt 필드 추가
             Long commentCnt = (Long) row[10]; // commentCnt 필드
             Long voteCnt = (Long) row[11]; // voteCnt 필드
-            int totalCount = ((Number) row[12]).intValue(); // 총 카운트
+            Long isAdopte = (Long) row[12];
 
             return BoardResponseDto.builder()
                     .id(id)
@@ -228,7 +228,7 @@ public class BoardService {
                     .createdAt(DateFormat.yyyyMMdd(createdAt))
                     .commentCnt(commentCnt)
                     .vote(voteCnt)
-                    .totalCount(totalCount)
+                    .isAdopte(isAdopte != null)
                     .build();
         }).collect(Collectors.toList());
     }

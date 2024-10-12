@@ -2,6 +2,7 @@ package com.poten.hoohae.client.controller;
 
 import com.poten.hoohae.client.domain.Category;
 import com.poten.hoohae.client.dto.req.CategoryRequestDto;
+import com.poten.hoohae.client.dto.res.CategoryResponseDto;
 import com.poten.hoohae.client.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/list")
-    public ResponseEntity<List<String>> getCategoryList() {
+    public ResponseEntity<List<CategoryResponseDto>> getCategoryList() {
         return ResponseEntity.ok(categoryService.getCategoryList());
     }
 }

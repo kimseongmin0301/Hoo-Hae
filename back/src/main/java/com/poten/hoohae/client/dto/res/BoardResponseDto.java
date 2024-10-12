@@ -28,6 +28,5 @@ public class BoardResponseDto {
     private String createdAt;
     private List<String> images;
     private Boolean isVoted;
-    private int totalCount;
     private Boolean isBookmark;
 }

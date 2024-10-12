@@ -13,13 +13,21 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+
+    @Query("select b, count(c) as commentCnt, count(v) as voteCnt from Board b " +
+            "left join Comment c on b.id = c.boardId " +
+            "left join Vote v on b.id = v.boardId " +
+            "group by b")
     Page<Board> findAll(Pageable pageable);
 
-    Page<Board> findAllByAge(Pageable pageable, Long age);
+    @Query("select count(b) from Board b where b.adoptionId is not null")
+    long countBoardsByAdopted();
 
-    Page<Board> findByCategory(Pageable pageable, String category);
+    Page<BoardResponseDto> findAllByAge(Pageable pageable, Long age);
 
-    Page<Board> findAllByAgeAndCategory(Pageable pageable, Long age, String category);
+    Page<BoardResponseDto> findByCategory(Pageable pageable, String category);
+
+    Page<BoardResponseDto> findAllByAgeAndCategory(Pageable pageable, Long age, String category);
 
     long countBoardsByAge(long age);
 

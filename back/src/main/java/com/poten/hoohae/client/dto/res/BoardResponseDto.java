@@ -1,11 +1,13 @@
 package com.poten.hoohae.client.dto.res;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -29,4 +31,21 @@ public class BoardResponseDto {
     private List<String> images;
     private Boolean isVoted;
     private Boolean isBookmark;
+
+    @QueryProjection
+    public BoardResponseDto(Long id, String subject, String body, String thumbnail,
+                            String userId, Long age, String category, String type,
+                            LocalDateTime createdAt, Long commentCnt, Long vote) {
+        this.id = id;
+        this.subject = subject;
+        this.body = body;
+        this.thumbnail = thumbnail;
+        this.userId = userId;
+        this.age = age;
+        this.category = category;
+        this.type = type;
+        this.createdAt = createdAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.commentCnt = commentCnt;
+        this.vote = vote;
+    }
 }

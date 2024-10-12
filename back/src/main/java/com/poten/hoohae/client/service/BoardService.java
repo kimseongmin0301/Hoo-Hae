@@ -6,10 +6,19 @@ import com.poten.hoohae.client.common.DateFormat;
 import com.poten.hoohae.client.common.Paging;
 import com.poten.hoohae.client.domain.Board;
 import com.poten.hoohae.client.domain.File;
-import com.poten.hoohae.client.dto.PagingDto;
+import com.poten.hoohae.client.domain.QBoard;
+import com.poten.hoohae.client.domain.QComment;
 import com.poten.hoohae.client.dto.req.BoardRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
 import com.poten.hoohae.client.repository.*;
+import com.poten.hoohae.client.repository.querydsl.BoardRepositoryCustom;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,57 +37,117 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.poten.hoohae.client.domain.QBoard.board;
+import static com.poten.hoohae.client.domain.QComment.comment;
+import static com.poten.hoohae.client.domain.QVote.vote;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardRepositoryCustom boardRepositoryCustom;
     private final CommentRepository commentRepository;
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
     private final VoteRepository voteRepository;
     private final ScrapRepository scrapRepository;
-
     private final S3Service s3Service;
+    private final JPAQueryFactory queryFactory;
 
-    public List<BoardResponseDto> getBoardList(int page, Long age, String category) {
-        Page<Board> board;
-        Pageable pageable = PageRequest.of(Paging.getPage(page, this.totalBoardCnt(age)) - 1, 5, Sort.by("createdAt").descending());
-        if (age == null) {
-            if(category == null || category.equals(""))
-                board = boardRepository.findAll(pageable);
-            else
-                board = boardRepository.findByCategory(pageable, category);
-        } else {
-            if(category == null || category.equals(""))
-                board = boardRepository.findAllByAge(pageable, age);
-            else
-                board = boardRepository.findAllByAgeAndCategory(pageable, age, category);
-        }
+    public List<BoardResponseDto> getBoardList(int page, Long age, String category, String sort) {
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
 
-        return board.getContent().stream()
-                .map(b -> BoardResponseDto.builder()
-                        .id(b.getId())
-                        .subject(b.getSubject())
-                        .body(b.getBody())
-                        .vote(voteRepository.countVoteByBoardId(b.getId()))
-                        .commentCnt(commentRepository.countCommentByBoardId(b.getId()))
-                        .thumbnail(b.getThumbnail())
-                        .userId(b.getUserId())
-                        .age(b.getAge())
-                        .isAdopte(b.getAdoptionId() != null)
-                        .nickname(b.getNickname())
-                        .category(b.getCategory())
-                        .type(b.getType())
-                        .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
-                        .build())
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        List<Board> boardList = queryFactory
+                .selectFrom(board)
+                .leftJoin(comment).on(comment.boardId.eq(board.id))
+                .where(applyFilters(age, category, sort))
+                .groupBy(board.id)
+                .orderBy(getSortOrder(sort, board, comment).toArray(new OrderSpecifier[0]))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<BoardResponseDto> responseDtos = boardList.stream()
+                .map(b -> {
+                    long commentCnt = commentRepository.countCommentByBoardId(b.getId());
+                    long voteCnt = b.getVote();
+                    return BoardResponseDto.builder()
+                            .id(b.getId())
+                            .subject(b.getSubject())
+                            .body(b.getBody())
+                            .vote(voteCnt)
+                            .commentCnt(commentCnt)
+                            .thumbnail(b.getThumbnail())
+                            .userId(b.getUserId())
+                            .age(b.getAge())
+                            .isAdopte(b.getAdoptionId() != null)
+                            .nickname(b.getNickname())
+                            .category(b.getCategory())
+                            .type(b.getType())
+                            .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+                            .build();
+                })
                 .collect(Collectors.toList());
+
+        return responseDtos;
     }
 
-    public long totalBoardCnt(Long age) {
-        if(age == null)
-            return boardRepository.count();
-        return boardRepository.countBoardsByAge(age);
+    // 정렬 조건을 설정하는 메소드
+    private List<OrderSpecifier<?>> getSortOrder(String sort, QBoard board, QComment comment) {
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+
+        // 주어진 sort가 유효한 경우
+        if (sort != null && !sort.isEmpty()) {
+            switch (sort) {
+                case "vote":
+                    orderSpecifiers.add(board.vote.desc());
+                    break;
+                case "commentCnt":
+                    orderSpecifiers.add(comment.count().desc());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // createdAt을 기본적으로 내림차순으로 정렬 추가
+        orderSpecifiers.add(board.createdAt.desc());
+
+        return orderSpecifiers;
+    }
+
+    private BooleanExpression applyFilters(Long age, String category, String sort) {
+        QBoard board = QBoard.board;
+        BooleanExpression predicate = board.isNotNull(); // 기본 조건
+
+        if (age != null) {
+            predicate = predicate.and(board.age.eq(age));
+        }
+
+        if (category != null && !category.isEmpty()) {
+            predicate = predicate.and(board.category.eq(category));
+        }
+
+        if(sort.equals("adopted")) {
+            predicate = predicate.and(board.adoptionId.isNotNull());
+        }
+
+        return predicate;
+    }
+
+    public long totalBoardCnt(Long age, String sort) {
+        switch (sort) {
+            case "adopted":
+                return boardRepository.countBoardsByAdopted();
+            default:
+                if (age == null)
+                    return boardRepository.count();
+                return boardRepository.countBoardsByAge(age);
+        }
     }
 
     @Transactional
@@ -162,19 +231,6 @@ public class BoardService {
             throw new RuntimeException("수정권한없음");
         }
 
-        List<MultipartFile> images = reqDto.getImage();
-        String thumbnailUrl = "";
-        List<Map<String, String>> imageUrls = new ArrayList<>();
-
-        if(images == null) {
-
-        } else if (images.size() > 3) {
-            throw new IllegalArgumentException("이미지 수가 3개를 초과합니다.");
-        } else {
-            imageUrls = s3Service.uploadFiles(images);
-            thumbnailUrl = imageUrls.isEmpty() ? null : imageUrls.get(0).get("link");
-        }
-
         Board updatedBoard = Board.builder()
                 .id(board.getId())
                 .nickname(board.getNickname())
@@ -251,26 +307,26 @@ public class BoardService {
         return boardRepository.countBoardsByCategory(category);
     }
 
-    public List<BoardResponseDto> getBoardCategoryList(int page, String category) {
-        Pageable pageable = PageRequest.of(Paging.getPage(page, this.countByCategory(category)) - 1, 5, Sort.by("createdAt").descending());
-        Page<Board> board = boardRepository.findByCategory(pageable, category);
-
-        return board.getContent().stream()
-                .map(b -> BoardResponseDto.builder()
-                        .id(b.getId())
-                        .subject(b.getSubject())
-                        .body(b.getBody())
-                        .vote(voteRepository.countVoteByBoardId(b.getId()))
-                        .commentCnt(commentRepository.countCommentByBoardId(b.getId()))
-                        .thumbnail(b.getThumbnail())
-                        .userId(b.getUserId())
-                        .age(b.getAge())
-                        .isAdopte(b.getAdoptionId() != null)
-                        .nickname(b.getNickname())
-                        .category(b.getCategory())
-                        .type(b.getType())
-                        .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
-                        .build())
-                .collect(Collectors.toList());
-    }
+//    public List<BoardResponseDto> getBoardCategoryList(int page, String category) {
+//        Pageable pageable = PageRequest.of(Paging.getPage(page, this.countByCategory(category)) - 1, 5, Sort.by("createdAt").descending());
+//        Page<BoardResponseDto> board = boardRepository.findByCategory(pageable, category);
+//
+//        return board.getContent().stream()
+//                .map(b -> BoardResponseDto.builder()
+//                        .id(b.getId())
+//                        .subject(b.getSubject())
+//                        .body(b.getBody())
+//                        .vote(voteRepository.countVoteByBoardId(b.getId()))
+//                        .commentCnt(commentRepository.countCommentByBoardId(b.getId()))
+//                        .thumbnail(b.getThumbnail())
+//                        .userId(b.getUserId())
+//                        .age(b.getAge())
+//                        .isAdopte(b.getAdoptionId() != null)
+//                        .nickname(b.getNickname())
+//                        .category(b.getCategory())
+//                        .type(b.getType())
+//                        .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
 }

@@ -37,7 +37,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "ORDER BY (COUNT(DISTINCT c.id) + COUNT(DISTINCT v.id)) DESC")
     List<Object[]> findTop5ByAgeWithCommentAndVoteCount(@Param("age") Long age, Pageable pageable);
 
-    @Query("SELECT b.id, b.subject, b.thumbnail, b.body, b.age, b.userId, b.nickname, b.category, b.type, b.createdAt, b.adoptionId" +
+    @Query("SELECT b.id, b.subject, b.thumbnail, b.body, b.age, b.userId, b.nickname, b.category, b.type, b.createdAt, b.adoptionId," +
             "COUNT(c.id) AS commentCnt, " +
             "COUNT(DISTINCT v.id) AS voteCnt, " +
             "(COUNT(DISTINCT c.id) + COUNT(DISTINCT v.id)) AS totalCount " +

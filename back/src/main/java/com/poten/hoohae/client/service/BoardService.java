@@ -85,6 +85,7 @@ public class BoardService {
                             .thumbnail(b.getThumbnail())
                             .userId(b.getUserId())
                             .age(b.getAge())
+                            .isVoted()
                             .isAdopte(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
@@ -142,13 +143,16 @@ public class BoardService {
     }
 
     public long totalBoardCnt(Long age, String sort) {
+        // sort가 null인 경우 기본 카운트를 반환
+        if (sort == null) {
+            return age == null ? boardRepository.count() : boardRepository.countBoardsByAge(age);
+        }
+
         switch (sort) {
             case "adopted":
                 return boardRepository.countBoardsByAdopted();
             default:
-                if (age == null)
-                    return boardRepository.count();
-                return boardRepository.countBoardsByAge(age);
+                return age == null ? boardRepository.count() : boardRepository.countBoardsByAge(age);
         }
     }
 

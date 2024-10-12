@@ -77,9 +77,9 @@ public class BoardController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Long> updateBoard(@PathVariable(name = "id") long id, @ModelAttribute BoardRequestDto dto, Authentication authentication){
-        String userId = authentication.getName();
-        Long updateId = boardService.updateBoard(id, dto, userId);
+    public ResponseEntity<Long> updateBoard(@PathVariable(name = "id") long id, @ModelAttribute BoardRequestDto dto, Authentication authentication) throws IOException {
+        String email = authentication.getName();
+        Long updateId = boardService.updateBoard(id, dto, email);
         return ResponseEntity.ok(updateId);
     }
 

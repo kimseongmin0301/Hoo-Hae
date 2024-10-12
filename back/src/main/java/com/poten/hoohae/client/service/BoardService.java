@@ -45,12 +45,12 @@ public class BoardService {
         Page<Board> board;
         Pageable pageable = PageRequest.of(Paging.getPage(page, this.totalBoardCnt(age)) - 1, 5, Sort.by("createdAt").descending());
         if (age == null) {
-            if(category == null)
+            if(category == null || category.equals(""))
                 board = boardRepository.findAll(pageable);
             else
                 board = boardRepository.findByCategory(pageable, category);
         } else {
-            if(category == null)
+            if(category == null || category.equals(""))
                 board = boardRepository.findAllByAge(pageable, age);
             else
                 board = boardRepository.findAllByAgeAndCategory(pageable, age, category);
@@ -154,25 +154,39 @@ public class BoardService {
     }
 
     @Transactional
-    public Long updateBoard(Long id, BoardRequestDto reqDto, String userId){
-        Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException());
+    public Long updateBoard(Long id, BoardRequestDto reqDto, String email) throws IOException {
+        Optional<User> user = userRepository.findByEmail(email);
+        Board board = boardRepository.findById(user.get().getId()).orElseThrow(() -> new RuntimeException());
 
-        if(!board.getUserId().equals(userId)) {
+        if(!board.getUserId().equals(user.get().getUserId())) {
             throw new RuntimeException("수정권한없음");
         }
 
+        List<MultipartFile> images = reqDto.getImage();
+        String thumbnailUrl = "";
+        List<Map<String, String>> imageUrls = new ArrayList<>();
+
+        if(images == null) {
+
+        } else if (images.size() > 3) {
+            throw new IllegalArgumentException("이미지 수가 3개를 초과합니다.");
+        } else {
+            imageUrls = s3Service.uploadFiles(images);
+            thumbnailUrl = imageUrls.isEmpty() ? null : imageUrls.get(0).get("link");
+        }
+
         Board updatedBoard = Board.builder()
-                .id(board.getId()) // 기존 ID 유지
+                .id(board.getId())
                 .nickname(board.getNickname())
-                .subject(reqDto.getSubject()) // 새로운 제목
-                .body(reqDto.getBody()) // 새로운 내용
+                .subject(reqDto.getSubject())
+                .body(reqDto.getBody())
                 .vote(board.getVote())
                 .adoptionId(board.getAdoptionId())
                 .thumbnail(board.getThumbnail())
                 .age(board.getAge())
                 .category(board.getCategory())
                 .type(board.getType())
-                .userId(userId) // 기존 작성자 유지
+                .userId(board.getUserId())
                 .createdAt(board.getCreatedAt())
                 .build();
         boardRepository.save(updatedBoard);

@@ -1,5 +1,6 @@
 package com.poten.hoohae.client.controller;
 
+import com.poten.hoohae.client.common.Paging;
 import com.poten.hoohae.client.dto.PagingDto;
 import com.poten.hoohae.client.dto.req.CommentRequestDto;
 import com.poten.hoohae.client.service.CommentService;
@@ -23,8 +24,7 @@ public class CommentController {
 
         long totalItemCnt = commentService.getCommentCnt(id);
         PagingDto pagingDto = PagingDto.builder()
-                .totalItems(totalItemCnt)
-                .currentPage(page)
+                .hasPage(Paging.hasPage(page, totalItemCnt))
                 .data(commentService.getCommentByBoard(id, page))
                 .build();
 

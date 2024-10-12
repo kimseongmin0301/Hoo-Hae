@@ -27,13 +27,14 @@ public class BoardController {
     private final BoardService boardService;
 
     @GetMapping("/list")
-    public ResponseEntity<PagingDto> getBoardList(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "age", required = false) Long age) {
+    public ResponseEntity<PagingDto> getBoardList(@RequestParam(value = "page", defaultValue = "1") int page
+            , @RequestParam(value = "age", required = false) Long age
+    , @RequestParam(value = "category", required = false) String category) {
         log.info("/api/board/list");
 
         long totalItemCnt = boardService.totalBoardCnt(age);
         PagingDto pagingDto = PagingDto.builder()
-                .totalItems(totalItemCnt)
-                .currentPage(page)
+                .hasPage(Paging.hasPage(page, totalItemCnt))
                 .data(boardService.getBoardList(page, age))
                 .build();
 
@@ -45,8 +46,7 @@ public class BoardController {
         log.info("category list");
         long totalItemCnt = boardService.countByCategory(category);
         PagingDto pagingDto = PagingDto.builder()
-                .totalItems(totalItemCnt)
-                .currentPage(page)
+                .hasPage(Paging.hasPage(page, totalItemCnt))
                 .data(boardService.getBoardCategoryList(page, category))
                 .build();
 

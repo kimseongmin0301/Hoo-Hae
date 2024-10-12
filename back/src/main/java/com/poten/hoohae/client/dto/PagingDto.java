@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class PagingDto<T> {
-    private Long totalItems;
-    private int currentPage;
+    private Boolean hasPage;
     private T data;
 }

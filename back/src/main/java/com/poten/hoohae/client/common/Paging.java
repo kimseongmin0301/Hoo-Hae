@@ -11,4 +11,8 @@ public class Paging {
 
         return page;
     }
+
+    public static Boolean hasPage(int page, long total) {
+        return (page * 5) < total;
+    }
 }

@@ -1,6 +1,7 @@
 package com.poten.hoohae.client.controller;
 
 import com.poten.hoohae.client.domain.Question;
+import com.poten.hoohae.client.dto.res.QuestionResponseDto;
 import com.poten.hoohae.client.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,9 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("/today")
-    public ResponseEntity<Question> getTodayQuestion() {
+    public ResponseEntity<QuestionResponseDto> getTodayQuestion() {
         LocalDate today = LocalDate.now();
-        Question question = questionService.getTodayQuestion(today);
+        QuestionResponseDto question = questionService.getTodayQuestion(today);
         if (question == null) {
             question = questionService.setTodayQuestion(today);
         }

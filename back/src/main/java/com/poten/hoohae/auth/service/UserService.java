@@ -4,9 +4,12 @@ import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.dto.req.UserRequestDto;
 import com.poten.hoohae.auth.dto.res.UserResponseDto;
 import com.poten.hoohae.auth.repository.UserRepository;
+import com.poten.hoohae.client.domain.Image;
+import com.poten.hoohae.client.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,6 +17,8 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final ImageRepository imageRepository;
 
     public String returnUserId (String id) {
         Optional<User> user = userRepository.findByEmail(id);
@@ -38,5 +43,15 @@ public class UserService {
         userRepository.save(user);
 
         return userRepository.save(user).getId();
+    }
+
+    public List<Image> getImageList(String type){
+        List<Image> image;
+        if(type != null) {
+            image = imageRepository.findAllByType(type);
+        } else {
+            image = imageRepository.findAll();
+        }
+        return image;
     }
 }

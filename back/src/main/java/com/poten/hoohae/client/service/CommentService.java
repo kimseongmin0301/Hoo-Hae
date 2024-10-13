@@ -10,6 +10,7 @@ import com.poten.hoohae.client.dto.res.CommentResponseDto;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import com.poten.hoohae.client.repository.ImageRepository;
+import com.poten.hoohae.client.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,7 @@ public class CommentService {
 
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
+    private final VoteRepository voteRepository;
 
     public long getCommentCnt(long boardId) {
         return commentRepository.countCommentByBoardId(boardId);
@@ -54,6 +56,7 @@ public class CommentService {
                         .createdAt(c.getCreatedAt())
                         .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
                         .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
+                        .isVoted(voteRepository.findByNickname(board.getId(), "comment") != null ? true : false)
                         .img(img)
                         .build())
                 .collect(Collectors.toList());

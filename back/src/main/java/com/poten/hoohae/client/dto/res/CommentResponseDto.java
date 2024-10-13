@@ -19,4 +19,5 @@ public class CommentResponseDto {
     private Boolean isAdopted;
     private LocalDateTime createdAt;
     private String img;
+    private Boolean isVoted;
 }

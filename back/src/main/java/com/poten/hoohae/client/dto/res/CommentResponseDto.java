@@ -18,4 +18,5 @@ public class CommentResponseDto {
     private Boolean isWriter;
     private Boolean isAdopted;
     private LocalDateTime createdAt;
+    private String img;
 }

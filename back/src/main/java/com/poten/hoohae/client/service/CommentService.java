@@ -7,6 +7,7 @@ import com.poten.hoohae.client.domain.Board;
 import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.dto.req.CommentRequestDto;
 import com.poten.hoohae.client.dto.res.CommentResponseDto;
+import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,13 +26,19 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
 
+    private final BoardRepository boardRepository;
+
     public long getCommentCnt(long boardId) {
         return commentRepository.countCommentByBoardId(boardId);
     }
 
-    public List<CommentResponseDto> getCommentByBoard(Long boardId, int page) {
+    public List<CommentResponseDto> getCommentByBoard(Long boardId, int page, String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
         Pageable pageable = PageRequest.of(Paging.getPage(page, this.getCommentCnt(boardId)) - 1, 5, Sort.by("createdAt").ascending());
         Page<Comment> comment = commentRepository.findByBoardId(pageable, boardId);
+        Optional<Board> optionalBoard = boardRepository.findById(boardId);
+        Board board = optionalBoard.get();
 
         return comment.getContent().stream()
                 .map(c -> CommentResponseDto.builder()
@@ -42,6 +49,8 @@ public class CommentService {
                         .age(c.getAge())
                         .vote(c.getVote())
                         .createdAt(c.getCreatedAt())
+                        .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
+                        .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
                         .build())
                 .collect(Collectors.toList());
     }

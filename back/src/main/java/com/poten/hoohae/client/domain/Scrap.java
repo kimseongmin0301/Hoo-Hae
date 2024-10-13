@@ -20,7 +20,7 @@ public class Scrap {
     @Column(name = "USER_ID")
     private String userId;
 
-    @Column(name = "BORAD_ID")
+    @Column(name = "BOARD_ID")
     private Long boardId;
 
     @Column(name = "CATEGORY")

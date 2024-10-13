@@ -15,5 +15,7 @@ public class CommentResponseDto {
     private String body;
     private Long age;
     private Long vote;
+    private Boolean isWriter;
+    private Boolean isAdopted;
     private LocalDateTime createdAt;
 }

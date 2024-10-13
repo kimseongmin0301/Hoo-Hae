@@ -3,26 +3,18 @@ package com.poten.hoohae.client.service;
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.common.DateFormat;
-import com.poten.hoohae.client.common.Paging;
 import com.poten.hoohae.client.domain.*;
 import com.poten.hoohae.client.dto.req.BoardRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
 import com.poten.hoohae.client.repository.*;
-import com.poten.hoohae.client.repository.querydsl.BoardRepositoryCustom;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,16 +26,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.poten.hoohae.client.domain.QBoard.board;
-import static com.poten.hoohae.client.domain.QComment.comment;
-import static com.poten.hoohae.client.domain.QVote.vote;
-
 @Service
 @RequiredArgsConstructor
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final BoardRepositoryCustom boardRepositoryCustom;
     private final CommentRepository commentRepository;
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
@@ -76,6 +63,8 @@ public class BoardService {
                     Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
+                    String voteId = voteRepository.findByUserId(b.getUserId());
+                    Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
                     return BoardResponseDto.builder()
                             .id(b.getId())
                             .subject(b.getSubject())
@@ -85,7 +74,7 @@ public class BoardService {
                             .thumbnail(b.getThumbnail())
                             .userId(b.getUserId())
                             .age(b.getAge())
-                            .isVoted(null)
+                            .isVoted(vote)
                             .isAdopte(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
@@ -140,6 +129,80 @@ public class BoardService {
         }
 
         return predicate;
+    }
+
+    public List<BoardResponseDto> getMyBoardList(int page, String category) {
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
+
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        List<Board> boardList = queryFactory
+                .selectFrom(board)
+                .leftJoin(comment).on(comment.boardId.eq(board.id))
+                .where(myApplyFilters(category))
+                .groupBy(board.id)
+                .orderBy(getMyPageSortOrder(board).toArray(new OrderSpecifier[0]))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<BoardResponseDto> responseDtos = boardList.stream()
+                .map(b -> {
+                    long commentCnt = commentRepository.countCommentByBoardId(b.getId());
+                    long voteCnt = b.getVote();
+                    Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
+                    User user = optionalUser.get();
+                    String img = imageRepository.findByImage(user.getCharacterId());
+                    String voteId = voteRepository.findByUserId(b.getUserId());
+                    Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
+                    return BoardResponseDto.builder()
+                            .id(b.getId())
+                            .subject(b.getSubject())
+                            .body(b.getBody())
+                            .vote(voteCnt)
+                            .commentCnt(commentCnt)
+                            .thumbnail(b.getThumbnail())
+                            .userId(b.getUserId())
+                            .age(b.getAge())
+                            .isVoted(vote)
+                            .isAdopte(b.getAdoptionId() != null)
+                            .nickname(b.getNickname())
+                            .category(b.getCategory())
+                            .type(b.getType())
+                            .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+                            .img(img)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return responseDtos;
+    }
+
+    private List<OrderSpecifier<?>> getMyPageSortOrder(QBoard board) {
+        List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
+
+        orderSpecifiers.add(board.createdAt.desc());
+
+        return orderSpecifiers;
+    }
+
+    private BooleanExpression myApplyFilters(String category) {
+        QBoard board = QBoard.board;
+        BooleanExpression predicate = board.isNotNull(); // 기본 조건
+
+        if (category != null && !category.isEmpty()) {
+            predicate = predicate.and(board.category.eq(category));
+        }
+
+        return predicate;
+    }
+
+    public long myTotalBoardCnt(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+
+        return boardRepository.countByUserId(user.getUserId());
     }
 
     public long totalBoardCnt(Long age, String sort) {
@@ -207,6 +270,9 @@ public class BoardService {
 
     public BoardResponseDto getBoard(Long id) {
         Optional<Board> boardOptional = boardRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findByUserId(boardOptional.get().getUserId());
+        User user = optionalUser.get();
+        String img = imageRepository.findByImage(user.getCharacterId());
 
         return boardOptional.map(board -> BoardResponseDto.builder()
                 .id(board.getId())
@@ -222,8 +288,10 @@ public class BoardService {
                 .type(board.getType())
                 .category(board.getCategory())
                 .thumbnail(board.getThumbnail())
+                .vote(voteRepository.countVoteByBoardId(board.getId()))
                 .isBookmark(scrapRepository.findByBoardId(board.getId()) != null ? true : false)
                 .isVoted(voteRepository.findByNickname(board.getId(), "board") != null ? true : false)
+                .img(img)
                 .build()
         ).orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + id));
     }
@@ -257,9 +325,11 @@ public class BoardService {
     }
 
     @Transactional
-    public Long deleteBoard(Long id, String userId) {
+    public Long deleteBoard(Long id, String email) {
         Board board = boardRepository.findById(id).orElseThrow(() -> new RuntimeException());
-        if(!board.getUserId().equals(userId)) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if(!board.getUserId().equals(user.get().getUserId())) {
             throw new RuntimeException("삭제권한없음");
         }
 

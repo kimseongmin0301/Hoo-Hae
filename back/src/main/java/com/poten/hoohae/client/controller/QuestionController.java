@@ -1,6 +1,5 @@
 package com.poten.hoohae.client.controller;
 
-import com.poten.hoohae.client.domain.Question;
 import com.poten.hoohae.client.dto.res.QuestionResponseDto;
 import com.poten.hoohae.client.service.QuestionService;
 import lombok.RequiredArgsConstructor;

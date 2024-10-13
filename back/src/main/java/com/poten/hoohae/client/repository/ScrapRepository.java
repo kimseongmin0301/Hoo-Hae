@@ -10,7 +10,7 @@ import java.util.List;
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
     @Query("select s.boardId from Scrap s where s.boardId = :id ")
-    Scrap findByBoardId(@Param("id") Long id);
+    Long findByBoardId(@Param("id") Long id);
 
     long countByUserId(String userId);
 

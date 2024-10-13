@@ -19,7 +19,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping("/list/{boardId}")
-    public ResponseEntity<PagingDto> getCommentList(@PathVariable(value = "boardId") Long id, @RequestParam(name = "page", defaultValue = "5") int page, Authentication authentication) {
+    public ResponseEntity<PagingDto> getCommentList(@PathVariable(value = "boardId") Long id, @RequestParam(name = "page", defaultValue = "1") int page, Authentication authentication) {
         log.info("comment list");
 
         long totalItemCnt = commentService.getCommentCnt(id);

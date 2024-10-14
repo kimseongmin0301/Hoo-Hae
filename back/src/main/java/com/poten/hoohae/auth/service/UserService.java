@@ -64,6 +64,7 @@ public class UserService {
                 .id(user.getId())
                 .userId(user.getUserId())
                 .nickname(user.getNickname())
+                .characterId(user.getCharacterId())
                 .profile(imageRepository.findByImage(user.getCharacterId()))
                 .age(user.getAge())
                 .build();

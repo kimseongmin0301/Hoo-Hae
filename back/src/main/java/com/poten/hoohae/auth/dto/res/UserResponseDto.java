@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class UserResponseDto {
     private Long id;
+    private String userId;
     private Long age;
     private Long characterId;
     private String nickname;

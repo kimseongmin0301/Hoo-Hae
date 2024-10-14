@@ -34,6 +34,7 @@ public class UserService {
         }
         User user = User.builder()
                 .id(userOptional.get().getId())
+                .email(userId)
                 .age(dto.getAge())
                 .nickname(dto.getNickname())
                 .characterId(dto.getCharacterId())
@@ -61,6 +62,7 @@ public class UserService {
 
         return UserResponseDto.builder()
                 .id(user.getId())
+                .userId(user.getUserId())
                 .nickname(user.getNickname())
                 .profile(imageRepository.findByImage(user.getCharacterId()))
                 .age(user.getAge())

@@ -124,7 +124,7 @@ public class BoardService {
             predicate = predicate.and(board.category.eq(category));
         }
 
-        if(sort.equals("adopted")) {
+        if(sort != null && sort.equals("adopted")) {
             predicate = predicate.and(board.adoptionId.isNotNull());
         }
 

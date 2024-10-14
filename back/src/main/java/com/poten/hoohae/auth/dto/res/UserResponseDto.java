@@ -10,4 +10,5 @@ public class UserResponseDto {
     private Long age;
     private Long characterId;
     private String nickname;
+    private String profile;
 }

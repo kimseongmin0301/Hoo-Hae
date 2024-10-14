@@ -42,5 +42,6 @@ out/
 /gradle
 /back/src/main/resources/application.yml
 *.yml
+/back/src/main/generated
 
 /front/node_modules/

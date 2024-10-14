@@ -24,4 +24,10 @@ public class UserController {
 
         return ResponseEntity.ok(userService.updateProfile(dto, authentication.getName()));
     }
+
+    @GetMapping("/api/user/profile")
+    public ResponseEntity<UserResponseDto> getProfile(Authentication authentication) {
+
+        return ResponseEntity.ok(userService.getUserProfile(authentication.getName()));
+    }
 }

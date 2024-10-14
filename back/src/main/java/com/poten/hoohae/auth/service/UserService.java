@@ -54,4 +54,16 @@ public class UserService {
         }
         return image;
     }
+
+    public UserResponseDto getUserProfile(String email){
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .profile(imageRepository.findByImage(user.getCharacterId()))
+                .age(user.getAge())
+                .build();
+    }
 }

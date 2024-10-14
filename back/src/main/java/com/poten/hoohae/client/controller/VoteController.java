@@ -21,9 +21,16 @@ public class VoteController {
         return ResponseEntity.ok(voteCnt);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Long> updateVote(@PathVariable(name = "id") Long id, @RequestBody VoteRequestDto dto, Authentication authentication){
-        Long voteCnt = voteService.updateVote(id, dto, authentication.getName());
+    @PostMapping("/board/{id}")
+    public ResponseEntity<Long> updateVote(@PathVariable(name = "id") Long id, Authentication authentication){
+        Long voteCnt = voteService.updateVote(id,"board", authentication.getName());
         return ResponseEntity.ok(voteCnt);
+    }
+
+    @PostMapping("/comment/{id}")
+    public ResponseEntity<Long> aa(@PathVariable(name = "id") Long id, Authentication authentication) {
+        Long voteCnt = voteService.updateVote(id,"comment", authentication.getName());
+
+        return null;
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     @Query("select v.nickname from Vote v where v.boardId = :boardId and v.location = :location ")
@@ -15,6 +17,11 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     long countVoteByBoardId(Long id);
 
+    long countVoteByCommentId(Long id);
+
+    @Query("select v from Vote v where v.commentId = :commentId and v.userId = :userId")
+    Optional<Vote> findByCommentIdAndUserId(@Param("commentId") Long commentId, @Param("userId") String userId);
+
     @Query("select v from Vote v where v.boardId = :boardId and v.userId = :userId")
-    Vote findByBoardIdAndUserId(@Param("boardId") Long boardId, @Param("userId") String userId);
+    Optional<Vote> findByBoardIdAndUserId(@Param("boardId") Long boardId, @Param("userId") String userId);
 }

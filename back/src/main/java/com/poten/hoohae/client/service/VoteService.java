@@ -1,5 +1,6 @@
 package com.poten.hoohae.client.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.domain.Vote;
@@ -24,35 +25,41 @@ public class VoteService {
         return voteRepository.countVoteByBoardId(id);
     }
 
-    public Long updateVote(Long id, VoteRequestDto dto, String userId) {
+    public Long updateVote(Long id, String location, String userId) {
         Optional<User> userOptional = userRepository.findByEmail(userId);
         if (!userOptional.isPresent()) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
         User user = userOptional.get();
 
-        if(dto.getType()) {
+        if (location.equals("board")) {
+            Optional<Vote> optionalVote = voteRepository.findByBoardIdAndUserId(id, user.getUserId());
             Vote vote = Vote.builder()
-                    .userId(userId)
+                    .userId(user.getUserId())
                     .nickname(user.getNickname())
-                    .location(dto.getLocation())
+                    .location(location)
+                    .boardId(id)
                     .build();
-            if (dto.getLocation().equals("board")) {
-                vote = vote.toBuilder()
-                        .boardId(id)
-                        .build();
-
-            } else if (dto.getLocation().equals("comment")) {
-                vote = vote.toBuilder()
-                        .commentId(id)
-                        .build();
+            if(optionalVote.isEmpty()) {
+                voteRepository.save(vote);
+            } else {
+                voteRepository.deleteById(optionalVote.get().getId());
             }
-            voteRepository.save(vote);
+            return voteRepository.countVoteByBoardId(id);
         } else {
-            Vote vote = voteRepository.findByBoardIdAndUserId(id, userId);
-            voteRepository.deleteById(vote.getId());
+            Optional<Vote> optionalVote = voteRepository.findByCommentIdAndUserId(id, user.getUserId());
+            Vote vote = Vote.builder()
+                    .userId(user.getUserId())
+                    .nickname(user.getNickname())
+                    .location(location)
+                    .commentId(id)
+                    .build();
+            if(optionalVote.isEmpty()) {
+                voteRepository.save(vote);
+            } else {
+                voteRepository.deleteById(optionalVote.get().getId());
+            }
+            return voteRepository.countVoteByCommentId(id);
         }
-
-        return voteRepository.countVoteByBoardId(id);
     }
 }

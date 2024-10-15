@@ -83,8 +83,9 @@ public class CommentService {
 
     public Long updateComment(Long id, CommentRequestDto dto, String userId) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException());
+        Optional<User> optionalUser = userRepository.findByEmail(userId);
 
-        if(!comment.getUserId().equals(userId)) {
+        if(!comment.getUserId().equals(optionalUser.get().getUserId())) {
             throw new RuntimeException("수정권한없음");
         }
 

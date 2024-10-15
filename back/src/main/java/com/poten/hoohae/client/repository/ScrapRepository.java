@@ -6,11 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
     @Query("select s.boardId from Scrap s where s.boardId = :id ")
     Long findByBoardId(@Param("id") Long id);
+
+    Optional<Scrap> findScrapByBoardId(Long id);
 
     long countByUserId(String userId);
 

@@ -131,6 +131,53 @@ public class BoardService {
         return predicate;
     }
 
+    public List<BoardResponseDto> getMyScrapList(int page, String category) {
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
+        QScrap scrap = QScrap.scrap;
+
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        List<Board> boardList = queryFactory
+                .selectFrom(board)
+                .leftJoin(scrap).on(scrap.userId.eq(board.userId))
+                .where(myApplyScrapFilters(category))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<BoardResponseDto> responseDtos = boardList.stream()
+                .map(b -> {
+                    long commentCnt = commentRepository.countCommentByBoardId(b.getId());
+                    long voteCnt = b.getVote();
+                    Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
+                    User user = optionalUser.get();
+                    String img = imageRepository.findByImage(user.getCharacterId());
+                    String voteId = voteRepository.findByUserId(b.getUserId());
+                    Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
+                    return BoardResponseDto.builder()
+                            .id(b.getId())
+                            .subject(b.getSubject())
+                            .body(b.getBody())
+                            .vote(voteCnt)
+                            .commentCnt(commentCnt)
+                            .thumbnail(b.getThumbnail())
+                            .userId(b.getUserId())
+                            .age(b.getAge())
+                            .isVoted(vote)
+                            .isAdopte(b.getAdoptionId() != null)
+                            .nickname(b.getNickname())
+                            .category(b.getCategory())
+                            .type(b.getType())
+                            .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+                            .img(img)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return responseDtos;
+    }
+
     public List<BoardResponseDto> getMyBoardList(int page, String category) {
         QBoard board = QBoard.board;
         QComment comment = QComment.comment;
@@ -198,11 +245,33 @@ public class BoardService {
         return predicate;
     }
 
+    private BooleanExpression myApplyScrapFilters(String category) {
+        QBoard board = QBoard.board;
+        QScrap scrap = QScrap.scrap;
+        BooleanExpression predicate = board.isNotNull();
+
+        predicate = predicate.and(scrap.boardId.eq(board.id));
+
+        if (category != null && !category.isEmpty()) {
+            predicate = predicate.and(board.category.eq(category));
+        }
+
+        return predicate;
+    }
+
+
     public long myTotalBoardCnt(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user = optionalUser.get();
 
         return boardRepository.countByUserId(user.getUserId());
+    }
+
+    public long myScrapCnt(String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+
+        return scrapRepository.countByUserId(user.getUserId());
     }
 
     public long totalBoardCnt(Long age, String sort) {

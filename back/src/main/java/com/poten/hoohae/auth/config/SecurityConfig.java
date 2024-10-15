@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .headers(header -> header
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/api/token/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/api/token/**", "/api/user/nickname/check").permitAll()
                         .requestMatchers("/api/board/**","/api/my/**","/api/category/**","/api/comment/**","/api/question/**","/api/vote/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

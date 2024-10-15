@@ -69,4 +69,9 @@ public class UserService {
                 .age(user.getAge())
                 .build();
     }
+
+    public boolean findByNickname(String nickname) {
+       Optional<User> userOptional = userRepository.findByNickname(nickname);
+        return userOptional.isEmpty();
+    }
 }

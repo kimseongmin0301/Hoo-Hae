@@ -40,7 +40,7 @@ public class CommentController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Long> updateComment(@PathVariable(name = "id") Long id, CommentRequestDto dto, Authentication authentication){
+    public ResponseEntity<Long> updateComment(@PathVariable(name = "id") Long id, @RequestBody CommentRequestDto dto, Authentication authentication){
         log.info("update comment");
         Long commentId = commentService.updateComment(id, dto, authentication.getName());
 

@@ -30,4 +30,9 @@ public class UserController {
 
         return ResponseEntity.ok(userService.getUserProfile(authentication.getName()));
     }
+
+    @GetMapping("/api/user/nickname/check")
+    public ResponseEntity<Boolean> getNickCheck(@RequestParam("nickname") String nickname) {
+        return ResponseEntity.ok(userService.findByNickname(nickname));
+    }
 }

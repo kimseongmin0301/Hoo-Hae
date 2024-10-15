@@ -43,10 +43,18 @@ public class MyPageController {
         return ResponseEntity.ok(pagingDto);
     }
 
-//    @GetMapping("/scrap/list")
-//    public ResponseEntity<PagingDto> getMyPageScrapList(
-//            @RequestParam(value = "page", defaultValue = "1") int page,
-//            @RequestParam(value = "category") String category,
-//            Authentication authentication) {
-//    }
+    @GetMapping("/scrap/list")
+    public ResponseEntity<PagingDto> getMyPageScrapList(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "category") String category,
+            Authentication authentication) {
+
+        long totalItemCnt = boardService.myScrapCnt(authentication.getName());
+        PagingDto pagingDto = PagingDto.builder()
+                .hasPage(Paging.hasPage(page, totalItemCnt))
+                .data(boardService.getMyScrapList(page, category))
+                .build();
+
+        return ResponseEntity.ok(pagingDto);
+    }
 }

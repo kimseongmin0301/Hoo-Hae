@@ -5,6 +5,7 @@ import com.poten.hoohae.auth.dto.req.UserRequestDto;
 import com.poten.hoohae.auth.dto.res.UserResponseDto;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.domain.Image;
+import com.poten.hoohae.client.dto.res.ImageDto;
 import com.poten.hoohae.client.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,14 +47,16 @@ public class UserService {
         return userRepository.save(user).getId();
     }
 
-    public List<Image> getImageList(String type){
+    public List<String> getImageList(String type){
         List<Image> image;
         if(type != null) {
             image = imageRepository.findAllByType(type);
         } else {
             image = imageRepository.findAll();
         }
-        return image;
+        List<String> list = image.stream().map(Image::getImage).toList();
+
+        return list;
     }
 
     public UserResponseDto getUserProfile(String email){

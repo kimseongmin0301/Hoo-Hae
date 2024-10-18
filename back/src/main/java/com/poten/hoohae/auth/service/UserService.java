@@ -39,7 +39,7 @@ public class UserService {
                 .age(dto.getAge())
                 .nickname(dto.getNickname())
                 .characterId(dto.getCharacterId())
-                .userId(userId)
+                .userId(userOptional.get().getUserId())
                 .createdAt(userOptional.get().getCreatedAt())
                 .build();
         userRepository.save(user);

@@ -24,7 +24,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                                         Authentication authentication) throws IOException {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getName();
-        String token = jwtProvider.create(email);
+        String token = jwtProvider.create(email, "ROLE_USER");
 
         // 쿠키 설정
         Cookie cookie = new Cookie("hoohae_jwt_token", token);

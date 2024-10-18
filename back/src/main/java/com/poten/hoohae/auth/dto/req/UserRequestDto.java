@@ -13,4 +13,6 @@ public class UserRequestDto {
     private String nickname;
     private Long age;
     private Long characterId;
+    private Long image;
+    private String token;
 }

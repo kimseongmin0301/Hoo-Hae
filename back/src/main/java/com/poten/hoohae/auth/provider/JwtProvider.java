@@ -16,11 +16,11 @@ public class JwtProvider {
     @Value("${secret-key}")
     private String secretKey;
 
-    public String create(String userId){
+    public String create(String userId, String role){
         Date expiredDate = Date.from(Instant.now().plus(Duration.ofHours(720)));
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         Claims claims = Jwts.claims().setSubject(userId);
-        claims.put("role", "ROLE_USER");
+        claims.put("role", role);
 
         String jwt = Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)

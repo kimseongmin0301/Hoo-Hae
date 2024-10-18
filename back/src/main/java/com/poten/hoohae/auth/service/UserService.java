@@ -2,13 +2,18 @@ package com.poten.hoohae.auth.service;
 
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.dto.req.UserRequestDto;
+import com.poten.hoohae.auth.dto.res.OAuthResponseDto;
+import com.poten.hoohae.auth.dto.res.Result;
 import com.poten.hoohae.auth.dto.res.UserResponseDto;
+import com.poten.hoohae.auth.provider.JwtProvider;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.domain.Image;
 import com.poten.hoohae.client.dto.res.ImageDto;
 import com.poten.hoohae.client.repository.ImageRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final ImageRepository imageRepository;
+    private final JwtProvider jwtProvider;
 
     public String returnUserId (String id) {
         Optional<User> user = userRepository.findByEmail(id);
@@ -76,5 +82,30 @@ public class UserService {
     public boolean findByNickname(String nickname) {
        Optional<User> userOptional = userRepository.findByNickname(nickname);
         return userOptional.isEmpty();
+    }
+
+    @Transactional
+    public Result saveUser(OAuthResponseDto dto) {
+        String userId = "kakao_" + dto.getId();
+        String role, token;
+        Optional<User> existingUser = userRepository.findByUserId(userId);
+
+        if (existingUser.isEmpty()) {
+            User user = User.builder()
+                    .userId(userId)
+                    .email(dto.getKakaoAccount().getEmail())
+                    .build();
+           userRepository.save(user);
+        }
+
+        role = "ROLE_USER";
+        token = jwtProvider.create(dto.getKakaoAccount().getEmail(), role);
+
+        Result result = Result.builder()
+                .token(token)
+                .role("임시")
+                .build();
+
+        return result;
     }
 }

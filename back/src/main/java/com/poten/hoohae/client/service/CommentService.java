@@ -2,15 +2,14 @@ package com.poten.hoohae.client.service;
 
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
+import com.poten.hoohae.client.common.AlramEnum;
 import com.poten.hoohae.client.common.Paging;
+import com.poten.hoohae.client.domain.Alram;
 import com.poten.hoohae.client.domain.Board;
 import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.dto.req.CommentRequestDto;
 import com.poten.hoohae.client.dto.res.CommentResponseDto;
-import com.poten.hoohae.client.repository.BoardRepository;
-import com.poten.hoohae.client.repository.CommentRepository;
-import com.poten.hoohae.client.repository.ImageRepository;
-import com.poten.hoohae.client.repository.VoteRepository;
+import com.poten.hoohae.client.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +30,7 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final VoteRepository voteRepository;
+    private final AlramRepository alramRepository;
 
     public long getCommentCnt(long boardId) {
         return commentRepository.countCommentByBoardId(boardId);
@@ -78,7 +78,20 @@ public class CommentService {
                 .body(dto.getBody())
                 .build();
 
-        return commentRepository.save(comment).getId();
+        long result = commentRepository.save(comment).getId();
+
+        Alram alram = Alram.builder()
+                .userId(user.getUserId())
+                .body(dto.getBody())
+                .nickname(user.getNickname())
+                .type("comment")
+                .msg(String.valueOf(AlramEnum.COMMENT))
+                .commentId(result)
+                .boardId(dto.getBoardId())
+                .build();
+        alramRepository.save(alram);
+
+        return result;
     }
 
     public Long updateComment(Long id, CommentRequestDto dto, String userId) {

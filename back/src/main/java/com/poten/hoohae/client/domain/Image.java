@@ -14,7 +14,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "IMAGE", columnDefinition = "TEXT")
     private String image;
 
+    @Column(name = "TYPE")
     private String type;
 }

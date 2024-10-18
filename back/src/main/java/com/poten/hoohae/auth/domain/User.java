@@ -36,7 +36,7 @@ public class User {
 
     @Column(name = "ROLE")
     @Builder.Default
-    private String role = "ROLE_USER";
+    private String role = "ROLE_TEMP";
 
     @Column(name = "CHARACTER_ID")
     private Long characterId;

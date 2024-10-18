@@ -46,6 +46,7 @@ public class UserService {
                 .nickname(dto.getNickname())
                 .characterId(dto.getCharacterId())
                 .userId(userOptional.get().getUserId())
+                .role("ROLE_USER")
                 .createdAt(userOptional.get().getCreatedAt())
                 .build();
         userRepository.save(user);
@@ -88,6 +89,7 @@ public class UserService {
     public Result saveUser(OAuthResponseDto dto) {
         String userId = "kakao_" + dto.getId();
         String role, token;
+        long id = 0;
         Optional<User> existingUser = userRepository.findByUserId(userId);
 
         if (existingUser.isEmpty()) {
@@ -95,17 +97,55 @@ public class UserService {
                     .userId(userId)
                     .email(dto.getKakaoAccount().getEmail())
                     .build();
-           userRepository.save(user);
+           id = userRepository.save(user).getId();
         }
 
-        role = "ROLE_USER";
-        token = jwtProvider.create(dto.getKakaoAccount().getEmail(), role);
+        if(id == 0 ){
+            role = "ROLE_USER";
+            token = jwtProvider.create(dto.getKakaoAccount().getEmail(), role);
 
-        Result result = Result.builder()
-                .token(token)
-                .role("임시")
+            Result result = Result.builder()
+                    .token(token)
+                    .role("유저")
+                    .build();
+
+            return result;
+        } else {
+            role = "ROLE_TEMP";
+            token = jwtProvider.create(dto.getKakaoAccount().getEmail(), role);
+
+            Result result = Result.builder()
+                    .token(token)
+                    .role("임시")
+                    .build();
+
+            return result;
+        }
+    }
+
+    @Transactional
+    public Result onBoarding(UserRequestDto dto, String email){
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+        User user = User.builder()
+                .id(userOptional.get().getId())
+                .email(email)
+                .age(dto.getAge())
+                .nickname(dto.getNickname())
+                .characterId(dto.getCharacterId())
+                .userId(userOptional.get().getUserId())
+                .role("ROLE_USER")
+                .createdAt(userOptional.get().getCreatedAt())
                 .build();
+        userRepository.save(user);
 
-        return result;
+        String token = jwtProvider.create(email, "ROLE_USER");
+
+        return Result.builder()
+                .role("유저")
+                .token(token)
+                .build();
     }
 }

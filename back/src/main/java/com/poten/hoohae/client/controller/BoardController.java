@@ -42,18 +42,6 @@ public class BoardController {
         return ResponseEntity.ok(pagingDto);
     }
 
-//    @GetMapping("/category/list")
-//    public ResponseEntity<PagingDto> getCategoryList(@RequestParam(value ="category", required = false) String category, @RequestParam(value = "page", defaultValue = "1") int page) {
-//        log.info("category list");
-//        long totalItemCnt = boardService.countByCategory(category);
-//        PagingDto pagingDto = PagingDto.builder()
-//                .hasPage(Paging.hasPage(page, totalItemCnt))
-//                .data(boardService.getBoardCategoryList(page, category))
-//                .build();
-//
-//        return ResponseEntity.ok(pagingDto);
-//    }
-
     @GetMapping("/top5")
     public ResponseEntity<List<BoardResponseDto>> getTop5List(@RequestParam(value = "age", defaultValue = "0") Long age) {
 

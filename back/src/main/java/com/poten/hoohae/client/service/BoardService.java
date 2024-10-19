@@ -78,6 +78,7 @@ public class BoardService {
                             .isAdopte(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
+                            .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
                             .type(b.getType())
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                             .img(img)
@@ -169,6 +170,7 @@ public class BoardService {
                             .nickname(b.getNickname())
                             .category(b.getCategory())
                             .type(b.getType())
+                            .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                             .img(img)
                             .build();
@@ -214,6 +216,7 @@ public class BoardService {
                             .age(b.getAge())
                             .isVoted(vote)
                             .isAdopte(b.getAdoptionId() != null)
+                            .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
                             .type(b.getType())

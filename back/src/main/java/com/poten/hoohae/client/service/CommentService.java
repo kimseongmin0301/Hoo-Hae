@@ -53,6 +53,7 @@ public class CommentService {
                         .nickname(c.getNickname())
                         .age(c.getAge())
                         .vote(c.getVote())
+                        .body(c.getBody())
                         .createdAt(c.getCreatedAt())
                         .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
                         .isAdopted(board.getAdoptionId() == c.getId() ? true : false)

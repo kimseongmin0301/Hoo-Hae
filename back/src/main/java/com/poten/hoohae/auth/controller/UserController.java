@@ -44,6 +44,7 @@ public class UserController {
 
     @PostMapping("/api/user/save")
     public ResponseEntity<Result> save(@RequestBody UserRequestDto dto) {
+        System.out.println("dto = " + dto);
         OAuthResponseDto oauthDto = oAuthService.getUserInfo(dto.getToken()).block();
 
         return ResponseEntity.ok(userService.saveUser(Objects.requireNonNull(oauthDto)));

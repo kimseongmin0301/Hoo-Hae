@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class BoardService {
     private final S3Service s3Service;
     private final JPAQueryFactory queryFactory;
     private final ImageRepository imageRepository;
+    private final QuestionService questionService;
+    LocalDate today = LocalDate.now();
 
     public List<BoardResponseDto> getBoardList(int page, Long age, String category, String sort) {
         QBoard board = QBoard.board;
@@ -82,6 +85,8 @@ public class BoardService {
                             .type(b.getType())
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                             .img(img)
+                            .question(questionService.getTodayQuestion(today).getBody())
+                            .isQuestion(b.getQuestion().equals("Y") ? true : false)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -173,6 +178,8 @@ public class BoardService {
                             .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                             .img(img)
+                            .question(questionService.getTodayQuestion(today).getBody())
+                            .isQuestion(b.getQuestion().equals("Y") ? true : false)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -222,6 +229,8 @@ public class BoardService {
                             .type(b.getType())
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                             .img(img)
+                            .question(questionService.getTodayQuestion(today).getBody())
+                            .isQuestion(b.getQuestion().equals("Y") ? true : false)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -323,6 +332,7 @@ public class BoardService {
                 .age(dto.getAge())
                 .category(dto.getCategory())
                 .type(dto.getType())
+                .question(dto.getIsQuestion() ? "Y" : "N")
                 .build();
         Long id = boardRepository.save(board).getId();
 
@@ -364,6 +374,8 @@ public class BoardService {
                 .isBookmark(scrapRepository.findByBoardId(board.getId()) != null ? true : false)
                 .isVoted(voteRepository.findByNickname(board.getId(), "board") != null ? true : false)
                 .img(img)
+                .question(questionService.getTodayQuestion(today).getBody())
+                .isQuestion(board.getQuestion().equals("Y") ? true : false)
                 .build()
         ).orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + id));
     }

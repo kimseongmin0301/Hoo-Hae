@@ -19,4 +19,5 @@ public class BoardRequestDto {
     private String type;
     private Long age;
     private String category;
+    private Boolean isQuestion;
 }

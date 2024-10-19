@@ -55,6 +55,9 @@ public class Board {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
+    @Column(name = "QUESTION")
+    private String question;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

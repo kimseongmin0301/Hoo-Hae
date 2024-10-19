@@ -32,6 +32,8 @@ public class BoardResponseDto {
     private Boolean isVoted;
     private Boolean isBookmark;
     private String img;
+    private String question;
+    private Boolean isQuestion;
 
     @QueryProjection
     public BoardResponseDto(Long id, String subject, String body, String thumbnail,

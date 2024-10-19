@@ -3,6 +3,7 @@ package com.poten.hoohae.client.service;
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.common.AlramEnum;
+import com.poten.hoohae.client.common.DateFormat;
 import com.poten.hoohae.client.common.Paging;
 import com.poten.hoohae.client.domain.Alram;
 import com.poten.hoohae.client.domain.Board;
@@ -54,7 +55,7 @@ public class CommentService {
                         .age(c.getAge())
                         .vote(c.getVote())
                         .body(c.getBody())
-                        .createdAt(c.getCreatedAt())
+                        .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
                         .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
                         .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
                         .isVoted(voteRepository.findByNickname(board.getId(), "comment") != null ? true : false)

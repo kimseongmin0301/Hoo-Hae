@@ -441,9 +441,9 @@ public class BoardService {
             String category = (String) row[7]; // category 필드 추가
             String type = (String) row[8]; // type 필드 추가
             LocalDateTime createdAt = (LocalDateTime) row[9]; // createdAt 필드 추가
-            Long commentCnt = (Long) row[10]; // commentCnt 필드
-            Long voteCnt = (Long) row[11]; // voteCnt 필드
-            Long isAdopte = (Long) row[12];
+            Long isAdopte = (Long) row[10];
+            Long commentCnt = (Long) row[11]; // commentCnt 필드
+            Long voteCnt = (Long) row[12]; // voteCnt 필드
 
             return BoardResponseDto.builder()
                     .id(id)

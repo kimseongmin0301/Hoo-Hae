@@ -95,14 +95,14 @@ public class UserService {
         if (existingUser.isEmpty()) {
             User user = User.builder()
                     .userId(userId)
-                    .email(dto.getKakaoAccount().getEmail())
+                    .email(dto.getKakao_account().getEmail())
                     .build();
            id = userRepository.save(user).getId();
         }
 
         if(id == 0 ){
             role = "ROLE_USER";
-            token = jwtProvider.create(dto.getKakaoAccount().getEmail(), role);
+            token = jwtProvider.create(dto.getKakao_account().getEmail(), role);
 
             Result result = Result.builder()
                     .token(token)
@@ -112,7 +112,7 @@ public class UserService {
             return result;
         } else {
             role = "ROLE_TEMP";
-            token = jwtProvider.create(dto.getKakaoAccount().getEmail(), role);
+            token = jwtProvider.create(dto.getKakao_account().getEmail(), role);
 
             Result result = Result.builder()
                     .token(token)

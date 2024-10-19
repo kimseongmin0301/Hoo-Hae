@@ -31,12 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = parseBearerToken(request);
             if (token == null) {
-                if(request.getRequestURI().equals("/api/user/save")) {
-                    return;
-                } else {
-                    filterChain.doFilter(request, response);
-                    return;
-                }
+                filterChain.doFilter(request, response);
+                return;
             }
 
             if (jwtProvider.validate(token)) {

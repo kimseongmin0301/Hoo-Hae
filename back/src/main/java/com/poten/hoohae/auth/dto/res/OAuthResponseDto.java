@@ -9,7 +9,7 @@ public class OAuthResponseDto {
     private Long id;
     private String connected_at;
     private Properties properties;
-    private KakaoAccount kakaoAccount;
+    private KakaoAccount kakao_account;
 
     @Data
     @Builder

@@ -20,6 +20,6 @@ public class AdoptedController {
     @PostMapping("/{commentId}")
     public ResponseEntity<?> adopted(@RequestParam("commentId") Long id, Authentication authentication){
 
-        return null;
+        return ResponseEntity.ok(adoptedService.adopted(id, authentication.getName()));
     }
 }

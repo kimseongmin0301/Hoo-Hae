@@ -22,7 +22,7 @@ public class AdoptedService {
     private final BoardRepository boardRepository;
     private final AlramRepository alramRepository;
 
-    public void adopted(Long id, String email) {
+    public Long adopted(Long id, String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user = optionalUser.get();
 
@@ -72,6 +72,6 @@ public class AdoptedService {
 
         commentRepository.save(saveComment);
         boardRepository.save(saveBoard);
-        alramRepository.save(alram);
+        return alramRepository.save(alram).getId();
     }
 }

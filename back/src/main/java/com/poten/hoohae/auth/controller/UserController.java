@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(userService.saveUser(Objects.requireNonNull(oauthDto)));
     }
 
-    @PutMapping("/api/user/ob")
+    @PostMapping("/api/user/ob")
     public ResponseEntity<Result> onboard(@RequestBody UserRequestDto dto, Authentication authentication) {
 
         return ResponseEntity.ok(userService.onBoarding(dto, authentication.getName()));

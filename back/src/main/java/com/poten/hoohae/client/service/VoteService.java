@@ -3,9 +3,14 @@ package com.poten.hoohae.client.service;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
+import com.poten.hoohae.client.common.AlramEnum;
+import com.poten.hoohae.client.domain.Alram;
+import com.poten.hoohae.client.domain.Board;
+import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.domain.Vote;
 import com.poten.hoohae.client.dto.req.VoteRequestDto;
 import com.poten.hoohae.client.dto.res.BoardResponseDto;
+import com.poten.hoohae.client.repository.AlramRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import com.poten.hoohae.client.repository.VoteRepository;
@@ -19,6 +24,9 @@ import java.util.Optional;
 public class VoteService {
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
+    private final AlramRepository alramRepository;
+    private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     public Long getVoteCnt(Long id) {
 
@@ -42,6 +50,18 @@ public class VoteService {
                     .build();
             if(optionalVote.isEmpty()) {
                 voteRepository.save(vote);
+
+                Optional<Board> board = boardRepository.findById(id);
+                Alram alram = Alram.builder()
+                        .userId(user.getUserId())
+                        .body(board.get().getBody())
+                        .nickname(user.getNickname())
+                        .type("like")
+                        .msg(String.valueOf(AlramEnum.LIKE))
+                        .commentId(null)
+                        .boardId(id)
+                        .build();
+                alramRepository.save(alram);
             } else {
                 voteRepository.deleteById(optionalVote.get().getId());
             }
@@ -56,6 +76,18 @@ public class VoteService {
                     .build();
             if(optionalVote.isEmpty()) {
                 voteRepository.save(vote);
+                Optional<Comment> comment = commentRepository.findById(id);
+
+                Alram alram = Alram.builder()
+                        .userId(user.getUserId())
+                        .body(comment.get().getBody())
+                        .nickname(user.getNickname())
+                        .type("like")
+                        .msg(String.valueOf(AlramEnum.LIKE))
+                        .commentId(id)
+                        .boardId(comment.get().getBoardId())
+                        .build();
+                alramRepository.save(alram);
             } else {
                 voteRepository.deleteById(optionalVote.get().getId());
             }

@@ -12,9 +12,10 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("https://www.hoohae.com");
-        config.addAllowedOriginPattern("https://hoohae.com");
+//        config.setAllowCredentials(true);
+//        config.addAllowedOriginPattern("https://www.hoohae.com");
+//        config.addAllowedOriginPattern("https://hoohae.com");
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addExposedHeader("*");
         config.addAllowedMethod("*");

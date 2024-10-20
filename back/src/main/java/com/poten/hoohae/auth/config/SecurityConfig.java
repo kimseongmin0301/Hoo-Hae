@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -51,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**", "/oauth2/**", "/api/token/**", "/api/user/nickname/check", "/api/user/save", "/api/user/ob").permitAll()
                         .requestMatchers("/api/board/**","/api/my/**","/api/category/**","/api/comment/**","/api/question/**","/api/vote/**").hasRole("USER")
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT).permitAll()
                         .anyRequest().authenticated())
                 // oauth2 설정
                 .oauth2Login(oauth -> oauth

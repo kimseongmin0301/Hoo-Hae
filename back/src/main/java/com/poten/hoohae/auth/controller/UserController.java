@@ -25,7 +25,7 @@ public class UserController {
         return userService.returnUserId(id);
     }
 
-    @PutMapping("/api/user/update/profile")
+    @PostMapping("/api/user/update/profile")
     public ResponseEntity<Long> updateProfile(@RequestBody UserRequestDto dto, Authentication authentication) {
 
         return ResponseEntity.ok(userService.updateProfile(dto, authentication.getName()));

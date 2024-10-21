@@ -51,10 +51,27 @@ public class VoteService {
             if(optionalVote.isEmpty()) {
                 voteRepository.save(vote);
 
-                Optional<Board> board = boardRepository.findById(id);
+                Optional<Board> boardOptional = boardRepository.findById(id);
+                Board board = boardOptional.get();
+
+                board = Board.builder()
+                        .userId(board.getUserId())
+                        .nickname(board.getNickname())
+                        .subject(board.getSubject())
+                        .body(board.getBody())
+                        .thumbnail(board.getThumbnail()) // 썸네일 설정
+                        .vote(board.getVote() + 1) // 초기 투표 수
+                        .age(board.getAge())
+                        .category(board.getCategory())
+                        .type(board.getType())
+                        .question(board.getQuestion())
+                        .build();
+
+                boardRepository.save(board);
+
                 Alram alram = Alram.builder()
                         .userId(user.getUserId())
-                        .body(board.get().getBody())
+                        .body(board.getBody())
                         .nickname(user.getNickname())
                         .type("like")
                         .msg(String.valueOf(AlramEnum.LIKE))
@@ -64,6 +81,24 @@ public class VoteService {
                 alramRepository.save(alram);
             } else {
                 voteRepository.deleteById(optionalVote.get().getId());
+
+                Optional<Board> boardOptional = boardRepository.findById(id);
+                Board board = boardOptional.get();
+
+                board = Board.builder()
+                        .userId(board.getUserId())
+                        .nickname(board.getNickname())
+                        .subject(board.getSubject())
+                        .body(board.getBody())
+                        .thumbnail(board.getThumbnail()) // 썸네일 설정
+                        .vote(board.getVote() - 1) // 초기 투표 수
+                        .age(board.getAge())
+                        .category(board.getCategory())
+                        .type(board.getType())
+                        .question(board.getQuestion())
+                        .build();
+
+                boardRepository.save(board);
             }
             return voteRepository.countVoteByBoardId(id);
         } else {
@@ -76,20 +111,45 @@ public class VoteService {
                     .build();
             if(optionalVote.isEmpty()) {
                 voteRepository.save(vote);
-                Optional<Comment> comment = commentRepository.findById(id);
+                Optional<Comment> optionalComment = commentRepository.findById(id);
+                Comment comment = optionalComment.get();
+
+                comment = Comment.builder()
+                        .userId(comment.getUserId())
+                        .nickname(comment.getNickname())
+                        .age(comment.getAge())
+                        .boardId(comment.getBoardId())
+                        .vote(comment.getVote() + 1)
+                        .body(comment.getBody())
+                        .build();
+
+                commentRepository.save(comment);
 
                 Alram alram = Alram.builder()
                         .userId(user.getUserId())
-                        .body(comment.get().getBody())
+                        .body(comment.getBody())
                         .nickname(user.getNickname())
                         .type("like")
                         .msg(String.valueOf(AlramEnum.LIKE))
                         .commentId(id)
-                        .boardId(comment.get().getBoardId())
+                        .boardId(comment.getBoardId())
                         .build();
                 alramRepository.save(alram);
             } else {
                 voteRepository.deleteById(optionalVote.get().getId());
+
+                Optional<Comment> optionalComment = commentRepository.findById(id);
+                Comment comment = optionalComment.get();
+
+                comment = Comment.builder()
+                        .userId(comment.getUserId())
+                        .nickname(comment.getNickname())
+                        .age(comment.getAge())
+                        .boardId(comment.getBoardId())
+                        .vote(comment.getVote() - 1)
+                        .body(comment.getBody())
+                        .build();
+                commentRepository.save(comment);
             }
             return voteRepository.countVoteByCommentId(id);
         }

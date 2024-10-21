@@ -16,7 +16,7 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    @CachePut(value = "todayQuestion", key = "#today")
+    @CachePut(value = "todayQuestion", key = "#today", condition = "#today != null")
     public QuestionResponseDto setTodayQuestion(LocalDate today) {
         // count가 가장 적은 질문을 랜덤하게 가져옴
         Optional<Question> randomQuestionOptional = questionRepository.findRandomWithMinCount();
@@ -33,9 +33,9 @@ public class QuestionService {
         }
     }
 
-    @Cacheable(value = "todayQuestion", key = "#today")
+    @Cacheable(value = "todayQuestion", key = "#today", condition = "#today != null")
     public QuestionResponseDto getTodayQuestion(LocalDate today) {
-        return null;
+        return setTodayQuestion(today);
     }
 
 }

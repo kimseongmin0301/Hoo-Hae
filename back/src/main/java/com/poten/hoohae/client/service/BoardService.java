@@ -66,7 +66,7 @@ public class BoardService {
                     Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
-                    String voteId = voteRepository.findByUserId(b.getUserId());
+                    String voteId = voteRepository.findByUserId(b.getUserId(), b.getId());
                     Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
                     return BoardResponseDto.builder()
                             .id(b.getId())
@@ -159,7 +159,7 @@ public class BoardService {
                     Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
-                    String voteId = voteRepository.findByUserId(b.getUserId());
+                    String voteId = voteRepository.findByUserId(b.getUserId(), b.getId());
                     Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
                     return BoardResponseDto.builder()
                             .id(b.getId())
@@ -187,7 +187,7 @@ public class BoardService {
         return responseDtos;
     }
 
-    public List<BoardResponseDto> getMyBoardList(int page, String category) {
+    public List<BoardResponseDto> getMyBoardList(int page, String category, Boolean isAdoptedFilter) {
         QBoard board = QBoard.board;
         QComment comment = QComment.comment;
 
@@ -196,7 +196,8 @@ public class BoardService {
         List<Board> boardList = queryFactory
                 .selectFrom(board)
                 .leftJoin(comment).on(comment.boardId.eq(board.id))
-                .where(myApplyFilters(category))
+                .where(myApplyFilters(category)
+                        .and(isAdoptedFilter != null ? (isAdoptedFilter ? board.adoptionId.isNotNull() : board.adoptionId.isNull()) : null))
                 .groupBy(board.id)
                 .orderBy(getMyPageSortOrder(board).toArray(new OrderSpecifier[0]))
                 .offset(pageable.getOffset())
@@ -210,7 +211,7 @@ public class BoardService {
                     Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
-                    String voteId = voteRepository.findByUserId(b.getUserId());
+                    String voteId = voteRepository.findByUserId(b.getUserId(), b.getId());
                     Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
                     return BoardResponseDto.builder()
                             .id(b.getId())
@@ -222,7 +223,7 @@ public class BoardService {
                             .userId(b.getUserId())
                             .age(b.getAge())
                             .isVoted(vote)
-                            .isAdopte(b.getAdoptionId() != null)
+                            .isAdopte(b.getAdoptionId() != null)  // isAdopte 설정
                             .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
                             .nickname(b.getNickname())
                             .category(b.getCategory())

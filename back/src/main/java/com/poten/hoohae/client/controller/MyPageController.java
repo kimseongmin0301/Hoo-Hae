@@ -32,12 +32,13 @@ public class MyPageController {
     public ResponseEntity<PagingDto> getMyPostsList(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "category", required = false) String category,
+            @RequestParam(value = "isAdopted", defaultValue = "false") Boolean isAdopted,
             Authentication authentication) {
 
         long totalItemCnt = boardService.myTotalBoardCnt(authentication.getName());
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
-                .data(boardService.getMyBoardList(page, category))
+                .data(boardService.getMyBoardList(page, category, isAdopted))
                 .build();
 
         return ResponseEntity.ok(pagingDto);

@@ -43,6 +43,16 @@ public class S3Service {
 
     public List<Map<String, String>> uploadFiles(List<MultipartFile> files) throws IOException {
         List<Map<String, String>> fileUrls = new ArrayList<>();
+        for(MultipartFile file : files){
+            System.out.println(file.isEmpty());
+            System.out.println(file.getOriginalFilename());
+            System.out.println(file.getSize());
+            System.out.println(file.getInputStream());
+            System.out.println(file.getName());
+            System.out.println(file.getContentType());
+            System.out.println(file.getResource());
+        }
+
         if (files == null || files.isEmpty()) {
             return fileUrls;
         }

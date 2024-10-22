@@ -310,7 +310,7 @@ public class BoardService {
         User user = userOptional.get();
 
         List<MultipartFile> images = dto.getImage();
-        System.out.println("images.get(0) = " + images.get(0));
+        System.out.println("images.get(0) = " + images.get(0).getSize());
         String thumbnailUrl = "";
         List<Map<String, String>> imageUrls = new ArrayList<>();
 

@@ -53,7 +53,7 @@ public class S3Service {
             System.out.println(file.getResource());
         }
 
-        if (files == null || files.isEmpty()) {
+        if (files.isEmpty()) {
             return fileUrls;
         }
 

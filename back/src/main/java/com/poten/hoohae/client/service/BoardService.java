@@ -310,6 +310,7 @@ public class BoardService {
         User user = userOptional.get();
 
         List<MultipartFile> images = dto.getImage();
+        System.out.println("images.get(0) = " + images.get(0));
         String thumbnailUrl = "";
         List<Map<String, String>> imageUrls = new ArrayList<>();
 
@@ -319,6 +320,7 @@ public class BoardService {
             throw new IllegalArgumentException("이미지 수가 3개를 초과합니다.");
         } else {
             imageUrls = s3Service.uploadFiles(images);
+            System.out.println(imageUrls.get(0));
             thumbnailUrl = imageUrls.isEmpty() ? null : imageUrls.get(0).get("link");
         }
 

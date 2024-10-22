@@ -2,11 +2,11 @@ package com.poten.hoohae.client.service;
 
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
-import com.poten.hoohae.client.common.AlramEnum;
-import com.poten.hoohae.client.domain.Alram;
+import com.poten.hoohae.client.common.AlarmEnum;
+import com.poten.hoohae.client.domain.Alarm;
 import com.poten.hoohae.client.domain.Board;
 import com.poten.hoohae.client.domain.Comment;
-import com.poten.hoohae.client.repository.AlramRepository;
+import com.poten.hoohae.client.repository.AlarmRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class AdoptedService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
-    private final AlramRepository alramRepository;
+    private final AlarmRepository alarmRepository;
 
     public Long adopted(Long id, String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -60,18 +60,18 @@ public class AdoptedService {
                 .question(board.getQuestion())
                         .build();
 
-        Alram alram = Alram.builder()
+        Alarm alarm = Alarm.builder()
                 .userId(user.getUserId())
                 .body(board.getBody())
                 .nickname(user.getNickname())
                 .type("adopted")
-                .msg(String.valueOf(AlramEnum.ADOPTED))
+                .msg(String.valueOf(AlarmEnum.ADOPTED))
                 .commentId(null)
                 .boardId(id)
                 .build();
 
         commentRepository.save(saveComment);
         boardRepository.save(saveBoard);
-        return alramRepository.save(alram).getId();
+        return alarmRepository.save(alarm).getId();
     }
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class AlramResponseDto {
+public class AlarmResponseDto {
     private Long id;
     private String body;
     private String nickname;

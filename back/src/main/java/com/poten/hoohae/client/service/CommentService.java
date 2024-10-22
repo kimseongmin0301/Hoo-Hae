@@ -2,10 +2,10 @@ package com.poten.hoohae.client.service;
 
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
-import com.poten.hoohae.client.common.AlramEnum;
+import com.poten.hoohae.client.common.AlarmEnum;
 import com.poten.hoohae.client.common.DateFormat;
 import com.poten.hoohae.client.common.Paging;
-import com.poten.hoohae.client.domain.Alram;
+import com.poten.hoohae.client.domain.Alarm;
 import com.poten.hoohae.client.domain.Board;
 import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.dto.req.CommentRequestDto;
@@ -31,7 +31,7 @@ public class CommentService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final VoteRepository voteRepository;
-    private final AlramRepository alramRepository;
+    private final AlarmRepository alarmRepository;
 
     public long getCommentCnt(long boardId) {
         return commentRepository.countCommentByBoardId(boardId);
@@ -82,16 +82,16 @@ public class CommentService {
 
         long result = commentRepository.save(comment).getId();
 
-        Alram alram = Alram.builder()
+        Alarm alarm = Alarm.builder()
                 .userId(user.getUserId())
                 .body(dto.getBody())
                 .nickname(user.getNickname())
                 .type("comment")
-                .msg(String.valueOf(AlramEnum.COMMENT))
+                .msg(String.valueOf(AlarmEnum.COMMENT))
                 .commentId(result)
                 .boardId(dto.getBoardId())
                 .build();
-        alramRepository.save(alram);
+        alarmRepository.save(alarm);
 
         return result;
     }

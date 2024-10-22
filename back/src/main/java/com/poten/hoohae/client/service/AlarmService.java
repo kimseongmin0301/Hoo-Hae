@@ -2,9 +2,9 @@ package com.poten.hoohae.client.service;
 
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
-import com.poten.hoohae.client.domain.Alram;
-import com.poten.hoohae.client.dto.res.AlramResponseDto;
-import com.poten.hoohae.client.repository.AlramRepository;
+import com.poten.hoohae.client.domain.Alarm;
+import com.poten.hoohae.client.dto.res.AlarmResponseDto;
+import com.poten.hoohae.client.repository.AlarmRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import com.poten.hoohae.client.repository.ImageRepository;
@@ -21,23 +21,23 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AlramService {
-    private final AlramRepository alramRepository;
+public class AlarmService {
+    private final AlarmRepository alarmRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
 
-    public List<AlramResponseDto> getAlramList(int page, String email) {
+    public List<AlarmResponseDto> getAlarmList(int page, String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user = optionalUser.get();
 
         Pageable pageable = PageRequest.of(page - 1, 5);
 
-        Page<Alram> alrams = alramRepository.findAllByUserIdOrderByIdAsc(pageable, user.getUserId());
+        Page<Alarm> alarms = alarmRepository.findAllByUserIdOrderByIdAsc(pageable, user.getUserId());
 
-        List<AlramResponseDto> dto = alrams.getContent().stream()
-                .map(a -> AlramResponseDto.builder()
+        List<AlarmResponseDto> dto = alarms.getContent().stream()
+                .map(a -> AlarmResponseDto.builder()
                         .id(a.getId())
                         .nickname(a.getNickname())
                         .body(a.getBody())
@@ -54,16 +54,16 @@ public class AlramService {
         return dto;
     }
 
-    public long getAlramCnt(String email) {
+    public long getAlarmCnt(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user = optionalUser.get();
 
-        return alramRepository.countByUserId(user.getUserId());
+        return alarmRepository.countByUserId(user.getUserId());
     }
 
     @Transactional
-    public long deleteAlram(Long id) {
-        alramRepository.deleteById(id);
+    public long deleteAlarm(Long id) {
+        alarmRepository.deleteById(id);
         return id;
     }
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Alram {
+public class Alarm {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -43,15 +43,6 @@ public class S3Service {
 
     public List<Map<String, String>> uploadFiles(List<MultipartFile> files) throws IOException {
         List<Map<String, String>> fileUrls = new ArrayList<>();
-        for(MultipartFile file : files){
-            System.out.println(file.isEmpty());
-            System.out.println(file.getOriginalFilename());
-            System.out.println(file.getSize());
-            System.out.println(file.getInputStream());
-            System.out.println(file.getName());
-            System.out.println(file.getContentType());
-            System.out.println(file.getResource());
-        }
 
         if (files.isEmpty()) {
             return fileUrls;
@@ -78,7 +69,7 @@ public class S3Service {
             // 로그 추가
             System.out.println("Processing file: " + originalFileName + " with extension: " + fileExtension);
 
-            if (isImageExtension(fileExtension)) {
+//            if (isImageExtension(fileExtension)) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentLength(file.getSize());
 
@@ -97,9 +88,9 @@ public class S3Service {
 
                 // 파일이 정상적으로 리스트에 추가되었는지 로그로 확인
                 System.out.println("Added file URL: " + fileUrl);
-            } else {
-                System.out.println("Skipping non-image file: " + originalFileName);
-            }
+//            } else {
+//                System.out.println("Skipping non-image file: " + originalFileName);
+//            }
         }
 
         return fileUrls;

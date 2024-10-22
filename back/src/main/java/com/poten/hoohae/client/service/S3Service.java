@@ -69,7 +69,7 @@ public class S3Service {
             // 로그 추가
             System.out.println("Processing file: " + originalFileName + " with extension: " + fileExtension);
 
-//            if (isImageExtension(fileExtension)) {
+            if (isImageExtension(fileExtension)) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setContentLength(file.getSize());
 
@@ -88,9 +88,9 @@ public class S3Service {
 
                 // 파일이 정상적으로 리스트에 추가되었는지 로그로 확인
                 System.out.println("Added file URL: " + fileUrl);
-//            } else {
-//                System.out.println("Skipping non-image file: " + originalFileName);
-//            }
+            } else {
+                System.out.println("Skipping non-image file: " + originalFileName);
+            }
         }
 
         return fileUrls;

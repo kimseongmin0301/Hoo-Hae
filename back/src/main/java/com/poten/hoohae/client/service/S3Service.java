@@ -97,6 +97,6 @@ public class S3Service {
     }
 
     private boolean isImageExtension(String extension) {
-        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png");
+        return extension.equals("jpg") || extension.equals("jpeg") || extension.equals("png") || extension.equals("gif");
     }
 }

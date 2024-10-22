@@ -14,6 +14,7 @@ import com.poten.hoohae.client.repository.AlramRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
 import com.poten.hoohae.client.repository.VoteRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,7 @@ public class VoteService {
         return voteRepository.countVoteByBoardId(id);
     }
 
+    @Transactional
     public Long updateVote(Long id, String location, String userId) {
         Optional<User> userOptional = userRepository.findByEmail(userId);
         if (!userOptional.isPresent()) {
@@ -64,6 +66,7 @@ public class VoteService {
                         .vote(board.getVote() + 1) // 초기 투표 수
                         .age(board.getAge())
                         .category(board.getCategory())
+                        .createdAt(board.getCreatedAt())
                         .type(board.getType())
                         .question(board.getQuestion())
                         .build();
@@ -96,6 +99,7 @@ public class VoteService {
                         .vote(board.getVote() - 1) // 초기 투표 수
                         .age(board.getAge())
                         .category(board.getCategory())
+                        .createdAt(board.getCreatedAt())
                         .type(board.getType())
                         .question(board.getQuestion())
                         .build();
@@ -124,6 +128,7 @@ public class VoteService {
                         .boardId(comment.getBoardId())
                         .vote(comment.getVote() + 1)
                         .body(comment.getBody())
+                        .createdAt(comment.getCreatedAt())
                         .build();
 
                 commentRepository.save(comment);
@@ -151,6 +156,7 @@ public class VoteService {
                         .age(comment.getAge())
                         .boardId(comment.getBoardId())
                         .vote(comment.getVote() - 1)
+                        .createdAt(comment.getCreatedAt())
                         .body(comment.getBody())
                         .build();
                 commentRepository.save(comment);

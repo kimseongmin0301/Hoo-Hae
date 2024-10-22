@@ -55,6 +55,7 @@ public class VoteService {
                 Board board = boardOptional.get();
 
                 board = Board.builder()
+                        .id(board.getId())
                         .userId(board.getUserId())
                         .nickname(board.getNickname())
                         .subject(board.getSubject())
@@ -86,6 +87,7 @@ public class VoteService {
                 Board board = boardOptional.get();
 
                 board = Board.builder()
+                        .id(board.getId())
                         .userId(board.getUserId())
                         .nickname(board.getNickname())
                         .subject(board.getSubject())
@@ -115,6 +117,7 @@ public class VoteService {
                 Comment comment = optionalComment.get();
 
                 comment = Comment.builder()
+                        .id(comment.getId())
                         .userId(comment.getUserId())
                         .nickname(comment.getNickname())
                         .age(comment.getAge())
@@ -142,6 +145,7 @@ public class VoteService {
                 Comment comment = optionalComment.get();
 
                 comment = Comment.builder()
+                        .id(comment.getId())
                         .userId(comment.getUserId())
                         .nickname(comment.getNickname())
                         .age(comment.getAge())

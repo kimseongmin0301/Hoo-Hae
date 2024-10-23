@@ -12,4 +12,6 @@ public class AlarmResponseDto {
     private String msg;
     private String image;
     private Boolean isAlive;
+    private Long age;
+    private int page;
 }

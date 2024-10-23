@@ -90,6 +90,7 @@ public class CommentService {
                 .msg(String.valueOf(AlarmEnum.COMMENT))
                 .commentId(result)
                 .boardId(dto.getBoardId())
+                .age(user.getAge())
                 .build();
         alarmRepository.save(alarm);
 

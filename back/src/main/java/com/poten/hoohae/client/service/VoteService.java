@@ -81,6 +81,7 @@ public class VoteService {
                         .msg(String.valueOf(AlarmEnum.LIKE))
                         .commentId(null)
                         .boardId(id)
+                        .age(user.getAge())
                         .build();
                 alarmRepository.save(alarm);
             } else {
@@ -141,6 +142,7 @@ public class VoteService {
                         .msg(String.valueOf(AlarmEnum.LIKE))
                         .commentId(id)
                         .boardId(comment.getBoardId())
+                        .age(user.getAge())
                         .build();
                 alarmRepository.save(alarm);
             } else {

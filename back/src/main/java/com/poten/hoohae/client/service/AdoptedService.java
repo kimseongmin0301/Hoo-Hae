@@ -68,6 +68,7 @@ public class AdoptedService {
                 .msg(String.valueOf(AlarmEnum.ADOPTED))
                 .commentId(null)
                 .boardId(id)
+                .age(user.getAge())
                 .build();
 
         commentRepository.save(saveComment);

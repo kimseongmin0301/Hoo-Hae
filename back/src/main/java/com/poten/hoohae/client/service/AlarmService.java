@@ -48,10 +48,25 @@ public class AlarmService {
                         .isAlive(a.getType().equals("comment") ? (commentRepository.findById(a.getCommentId()).isPresent() && boardRepository.findById(a.getBoardId()).isPresent())
                                 : a.getType().equals("like") ? (commentRepository.findById(a.getCommentId()).isPresent() && boardRepository.findById(a.getBoardId()).isPresent())
                                 : (commentRepository.findById(a.getCommentId()).isPresent() && boardRepository.findById(a.getBoardId()).isPresent()))
+                        .age(a.getAge())
+                        .page(getCommentPageNumber(a.getBoardId(), a.getCommentId()))
                         .build())
                 .collect(Collectors.toList());
 
         return dto;
+    }
+
+    public int getCommentPageNumber(Long boardId, Long commentId) {
+        int commentsPerPage = 5;
+
+        // 댓글의 총 개수를 가져오는 로직 (예: 댓글 수 조회)
+        long totalComments = commentRepository.countCommentByBoardId(boardId);
+
+        // 해당 댓글이 전체 댓글 중 몇 번째에 있는지 인덱스 조회 (예: 인덱스 조회)
+        long commentIndex = commentRepository.findIndexByBoardIdAndCommentId(boardId, commentId);
+
+        // 페이지 번호 계산
+        return (int) (commentIndex / commentsPerPage) + 1;
     }
 
     public long getAlarmCnt(String email) {

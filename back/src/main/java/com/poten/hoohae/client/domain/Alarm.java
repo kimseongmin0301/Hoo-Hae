@@ -37,4 +37,7 @@ public class Alarm {
 
     @Column(name = "COMMENT_ID")
     private Long commentId;
+
+    @Column(name = "age")
+    private Long age;
 }

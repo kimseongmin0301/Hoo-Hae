@@ -31,6 +31,6 @@ public class VoteController {
     public ResponseEntity<Long> aa(@PathVariable(name = "id") Long id, Authentication authentication) {
         Long voteCnt = voteService.updateVote(id,"comment", authentication.getName());
 
-        return null;
+        return ResponseEntity.ok(voteCnt);
     }
 }

@@ -12,6 +12,9 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     @Query("select v.nickname from Vote v where v.boardId = :boardId and v.location = :location ")
     String findByNickname(@Param("boardId") Long boardId, @Param("location") String location);
 
+    @Query("select v.nickname from Vote v where v.commentId = :commentId and v.location = :location ")
+    String findByCommentNickname(@Param("commentId") Long commentId, @Param("location") String location);
+
     @Query("select v.userId from Vote v where v.userId = :userId and v.boardId = :id ")
     String findByUserId(@Param("userId") String userId, @Param("id") Long id);
 

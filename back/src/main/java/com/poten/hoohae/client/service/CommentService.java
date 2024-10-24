@@ -58,7 +58,7 @@ public class CommentService {
                         .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
                         .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
                         .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
-                        .isVoted(voteRepository.findByNickname(board.getId(), "comment") != null ? true : false)
+                        .isVoted(voteRepository.findByCommentNickname(board.getId(), "comment") != null ? true : false)
                         .img(img)
                         .build())
                 .collect(Collectors.toList());

@@ -458,6 +458,7 @@ public class BoardService {
                     .type(type)
                     .createdAt(DateFormat.yyyyMMdd(createdAt))
                     .commentCnt(commentCnt)
+                    .isVoted(voteRepository.findByNickname(id, "board") != null ? true : false)
                     .vote(voteCnt)
                     .isAdopte(isAdopte != null)
                     .build();

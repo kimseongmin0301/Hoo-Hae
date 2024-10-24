@@ -84,17 +84,19 @@ public class CommentService {
 
         long result = commentRepository.save(comment).getId();
 
-        Alarm alarm = Alarm.builder()
-                .userId(user.getUserId())
-                .body(dto.getBody())
-                .nickname(user.getNickname())
-                .type("comment")
-                .msg(String.valueOf(AlarmEnum.COMMENT))
-                .commentId(result)
-                .boardId(dto.getBoardId())
-                .age(user.getAge())
-                .build();
-        alarmRepository.save(alarm);
+        if(!user.getUserId().equals(comment.getUserId())) {
+            Alarm alarm = Alarm.builder()
+                    .userId(user.getUserId())
+                    .body(dto.getBody())
+                    .nickname(user.getNickname())
+                    .type("comment")
+                    .msg(String.valueOf(AlarmEnum.COMMENT))
+                    .commentId(result)
+                    .boardId(dto.getBoardId())
+                    .age(user.getAge())
+                    .build();
+            alarmRepository.save(alarm);
+        }
 
         return result;
     }

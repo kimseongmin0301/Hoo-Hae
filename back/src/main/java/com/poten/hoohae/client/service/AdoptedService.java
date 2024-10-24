@@ -60,19 +60,22 @@ public class AdoptedService {
                 .question(board.getQuestion())
                         .build();
 
-        Alarm alarm = Alarm.builder()
-                .userId(user.getUserId())
-                .body(board.getBody())
-                .nickname(user.getNickname())
-                .type("adopted")
-                .msg(String.valueOf(AlarmEnum.ADOPTED))
-                .commentId(null)
-                .boardId(id)
-                .age(user.getAge())
-                .build();
+        if(!user.getUserId().equals(comment.getUserId())) {
+            Alarm alarm = Alarm.builder()
+                    .userId(user.getUserId())
+                    .body(board.getBody())
+                    .nickname(user.getNickname())
+                    .type("adopted")
+                    .msg(String.valueOf(AlarmEnum.ADOPTED))
+                    .commentId(null)
+                    .boardId(id)
+                    .age(user.getAge())
+                    .build();
+            alarmRepository.save(alarm);
+        }
 
         commentRepository.save(saveComment);
-        boardRepository.save(saveBoard);
-        return alarmRepository.save(alarm).getId();
+
+        return boardRepository.save(saveBoard).getId();
     }
 }

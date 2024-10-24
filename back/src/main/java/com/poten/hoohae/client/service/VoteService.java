@@ -73,17 +73,19 @@ public class VoteService {
 
                 boardRepository.save(board);
 
-                Alarm alarm = Alarm.builder()
-                        .userId(user.getUserId())
-                        .body(board.getBody())
-                        .nickname(user.getNickname())
-                        .type("like")
-                        .msg(String.valueOf(AlarmEnum.LIKE))
-                        .commentId(null)
-                        .boardId(id)
-                        .age(user.getAge())
-                        .build();
-                alarmRepository.save(alarm);
+                if(!user.getUserId().equals(board.getUserId())) {
+                    Alarm alarm = Alarm.builder()
+                            .userId(user.getUserId())
+                            .body(board.getBody())
+                            .nickname(user.getNickname())
+                            .type("like")
+                            .msg(String.valueOf(AlarmEnum.LIKE))
+                            .commentId(null)
+                            .boardId(id)
+                            .age(user.getAge())
+                            .build();
+                    alarmRepository.save(alarm);
+                }
             } else {
                 voteRepository.deleteById(optionalVote.get().getId());
 
@@ -133,18 +135,19 @@ public class VoteService {
                         .build();
 
                 commentRepository.save(comment);
-
-                Alarm alarm = Alarm.builder()
-                        .userId(user.getUserId())
-                        .body(comment.getBody())
-                        .nickname(user.getNickname())
-                        .type("like")
-                        .msg(String.valueOf(AlarmEnum.LIKE))
-                        .commentId(id)
-                        .boardId(comment.getBoardId())
-                        .age(user.getAge())
-                        .build();
-                alarmRepository.save(alarm);
+                if(!user.getUserId().equals(comment.getUserId())) {
+                    Alarm alarm = Alarm.builder()
+                            .userId(user.getUserId())
+                            .body(comment.getBody())
+                            .nickname(user.getNickname())
+                            .type("like")
+                            .msg(String.valueOf(AlarmEnum.LIKE))
+                            .commentId(id)
+                            .boardId(comment.getBoardId())
+                            .age(user.getAge())
+                            .build();
+                    alarmRepository.save(alarm);
+                }
             } else {
                 voteRepository.deleteById(optionalVote.get().getId());
 

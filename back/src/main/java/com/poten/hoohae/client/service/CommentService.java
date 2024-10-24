@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,6 +62,7 @@ public class CommentService {
                         .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment") != null ? true : false)
                         .img(img)
                         .build())
+                .sorted(Comparator.comparing(CommentResponseDto::getIsAdopted).reversed())
                 .collect(Collectors.toList());
     }
 

@@ -45,8 +45,7 @@ public class CommentService {
         Optional<Board> optionalBoard = boardRepository.findById(boardId);
         Board board = optionalBoard.get();
         String img = imageRepository.findByImage(user.getCharacterId());
-        String voteId = voteRepository.findByUserId(board.getUserId(), board.getId());
-        Boolean vote = (voteId != null && voteId.equals(board.getUserId())) ? true : false;
+
         return comment.getContent().stream()
                 .map(c -> CommentResponseDto.builder()
                         .boardId(c.getBoardId())
@@ -56,7 +55,6 @@ public class CommentService {
                         .age(c.getAge())
                         .vote(c.getVote())
                         .body(c.getBody())
-                        .isVoted(vote)
                         .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
                         .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
                         .isAdopted(board.getAdoptionId() == c.getId() ? true : false)

@@ -373,7 +373,7 @@ public class BoardService {
                 .thumbnail(board.getThumbnail())
                 .vote(voteRepository.countVoteByBoardId(board.getId()))
                 .isBookmark(scrapRepository.findByBoardId(board.getId()) != null ? true : false)
-                .isVoted(voteRepository.findByNickname(board.getId(), "board") != null ? true : false)
+                .isVoted(voteRepository.findByNickname(board.getId(), "board", user.getUserId()) != null ? true : false)
                 .img(img)
                 .question(questionService.getTodayQuestion(today).getBody())
                 .isQuestion(board.getQuestion().equals("Y") ? true : false)
@@ -422,7 +422,9 @@ public class BoardService {
         return id;
     }
 
-    public List<BoardResponseDto> getTop5Boards (Long age) {
+    public List<BoardResponseDto> getTop5Boards (Long age, String email) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
         Pageable top5 = PageRequest.of(0, 5);
         List<Object[]> boardList;
         if(age != 0) {
@@ -458,7 +460,7 @@ public class BoardService {
                     .type(type)
                     .createdAt(DateFormat.yyyyMMdd(createdAt))
                     .commentCnt(commentCnt)
-                    .isVoted(voteRepository.findByNickname(id, "board") != null ? true : false)
+                    .isVoted(voteRepository.findByNickname(id, "board", user.getUserId()) != null ? true : false)
                     .vote(voteCnt)
                     .isAdopte(isAdopte != null)
                     .build();

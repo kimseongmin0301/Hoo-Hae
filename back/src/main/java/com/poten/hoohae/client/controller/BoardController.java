@@ -43,9 +43,9 @@ public class BoardController {
     }
 
     @GetMapping("/top5")
-    public ResponseEntity<List<BoardResponseDto>> getTop5List(@RequestParam(value = "age", defaultValue = "0") Long age) {
+    public ResponseEntity<List<BoardResponseDto>> getTop5List(@RequestParam(value = "age", defaultValue = "0") Long age, Authentication authentication) {
 
-        return ResponseEntity.ok(boardService.getTop5Boards(age));
+        return ResponseEntity.ok(boardService.getTop5Boards(age, authentication.getName()));
     }
 
     @GetMapping("/{id}")

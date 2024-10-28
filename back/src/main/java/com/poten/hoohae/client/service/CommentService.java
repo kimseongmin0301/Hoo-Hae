@@ -59,7 +59,7 @@ public class CommentService {
                         .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
                         .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
                         .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
-                        .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment") != null ? true : false)
+                        .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment", user.getUserId()) != null ? true : false)
                         .img(img)
                         .build())
                 .sorted(Comparator.comparing(CommentResponseDto::getIsAdopted).reversed())

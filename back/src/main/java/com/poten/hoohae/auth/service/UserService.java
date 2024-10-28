@@ -52,10 +52,10 @@ public class UserService {
 
         // User 엔티티의 nickname이 변경될 경우 관련된 엔티티들의 nickname도 업데이트
         if (!oldNickname.equals(newNickname)) {
-            boardRepository.updateNickname(oldNickname, newNickname);
+            boardRepository.updateNickname(oldNickname, newNickname, dto.getAge());
             voteRepository.updateNickname(oldNickname, newNickname);
-            commentRepository.updateNickname(oldNickname, newNickname);
-            alarmRepository.updateNickname(oldNickname, newNickname);
+            commentRepository.updateNickname(oldNickname, newNickname, dto.getAge());
+            alarmRepository.updateNickname(oldNickname, newNickname, dto.getAge());
         }
 
         user.setAge(dto.getAge());

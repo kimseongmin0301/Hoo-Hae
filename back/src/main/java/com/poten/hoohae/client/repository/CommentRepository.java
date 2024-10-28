@@ -24,6 +24,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByUserId(String id);
 
     @Modifying
-    @Query("UPDATE Comment b SET b.nickname = :newNickname WHERE b.nickname = :oldNickname")
-    void updateNickname(@Param("oldNickname") String oldNickname, @Param("newNickname") String newNickname);
+    @Query("UPDATE Comment b SET b.nickname = :newNickname, b.age = :age WHERE b.nickname = :oldNickname")
+    void updateNickname(@Param("oldNickname") String oldNickname, @Param("newNickname") String newNickname, @Param("age") Long age);
 }

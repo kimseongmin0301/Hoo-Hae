@@ -38,7 +38,7 @@ public class MyPageController {
         long totalItemCnt = boardService.myTotalBoardCnt(authentication.getName());
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
-                .data(boardService.getMyBoardList(page, category, isAdopted))
+                .data(boardService.getMyBoardList(page, category, isAdopted, authentication.getName()))
                 .build();
 
         return ResponseEntity.ok(pagingDto);

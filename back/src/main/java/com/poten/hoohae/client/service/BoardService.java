@@ -43,9 +43,11 @@ public class BoardService {
     private final QuestionService questionService;
     LocalDate today = LocalDate.now();
 
-    public List<BoardResponseDto> getBoardList(int page, Long age, String category, String sort) {
+    public List<BoardResponseDto> getBoardList(int page, Long age, String category, String sort, String email) {
         QBoard board = QBoard.board;
         QComment comment = QComment.comment;
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
 
         Pageable pageable = PageRequest.of(page - 1, 5);
 
@@ -67,7 +69,7 @@ public class BoardService {
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
                     String voteId = voteRepository.findByUserId(b.getUserId(), b.getId());
-                    Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
+
                     return BoardResponseDto.builder()
                             .id(b.getId())
                             .subject(b.getSubject())
@@ -77,7 +79,7 @@ public class BoardService {
                             .thumbnail(b.getThumbnail())
                             .userId(b.getUserId())
                             .age(b.getAge())
-                            .isVoted(vote)
+                            .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
                             .isAdopte(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
@@ -187,7 +189,9 @@ public class BoardService {
         return responseDtos;
     }
 
-    public List<BoardResponseDto> getMyBoardList(int page, String category, Boolean isAdoptedFilter) {
+    public List<BoardResponseDto> getMyBoardList(int page, String category, Boolean isAdoptedFilter, String email) {
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
         QBoard board = QBoard.board;
         QComment comment = QComment.comment;
 
@@ -212,7 +216,6 @@ public class BoardService {
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
                     String voteId = voteRepository.findByUserId(b.getUserId(), b.getId());
-                    Boolean vote = (voteId != null && voteId.equals(b.getUserId())) ? true : false;
                     return BoardResponseDto.builder()
                             .id(b.getId())
                             .subject(b.getSubject())
@@ -222,7 +225,7 @@ public class BoardService {
                             .thumbnail(b.getThumbnail())
                             .userId(b.getUserId())
                             .age(b.getAge())
-                            .isVoted(vote)
+                            .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
                             .isAdopte(b.getAdoptionId() != null)  // isAdopte 설정
                             .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
                             .nickname(b.getNickname())
@@ -351,7 +354,9 @@ public class BoardService {
         return id;
     }
 
-    public BoardResponseDto getBoard(Long id) {
+    public BoardResponseDto getBoard(Long id, String email) {
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
         Optional<Board> boardOptional = boardRepository.findById(id);
         Optional<User> optionalUser = userRepository.findByUserId(boardOptional.get().getUserId());
         User user = optionalUser.get();
@@ -373,7 +378,7 @@ public class BoardService {
                 .thumbnail(board.getThumbnail())
                 .vote(voteRepository.countVoteByBoardId(board.getId()))
                 .isBookmark(scrapRepository.findByBoardId(board.getId()) != null ? true : false)
-                .isVoted(voteRepository.findByNickname(board.getId(), "board", user.getUserId()) != null ? true : false)
+                .isVoted(!voteRepository.findByBoardIdAndUserId(board.getId(), clientUser.getUserId()).isEmpty())
                 .img(img)
                 .question(questionService.getTodayQuestion(today).getBody())
                 .isQuestion(board.getQuestion().equals("Y") ? true : false)

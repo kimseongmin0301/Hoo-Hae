@@ -30,13 +30,14 @@ public class BoardController {
     public ResponseEntity<PagingDto> getBoardList(@RequestParam(value = "page", defaultValue = "1") int page
             , @RequestParam(value = "age", required = false) Long age
     , @RequestParam(value = "category", required = false) String category
-    , @RequestParam(value = "sort", required = false) String sort) {
+    , @RequestParam(value = "sort", required = false) String sort
+    , Authentication authentication) {
         log.info("/api/board/list");
 
         long totalItemCnt = boardService.totalBoardCnt(age, sort);
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
-                .data(boardService.getBoardList(page, age, category, sort))
+                .data(boardService.getBoardList(page, age, category, sort, authentication.getName()))
                 .build();
 
         return ResponseEntity.ok(pagingDto);
@@ -49,8 +50,8 @@ public class BoardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoardResponseDto> getBoardId(@PathVariable(name = "id") Long id) {
-        BoardResponseDto dto = boardService.getBoard(id);
+    public ResponseEntity<BoardResponseDto> getBoardId(@PathVariable(name = "id") Long id, Authentication authentication) {
+        BoardResponseDto dto = boardService.getBoard(id, authentication.getName());
 
         return ResponseEntity.ok(dto);
     }

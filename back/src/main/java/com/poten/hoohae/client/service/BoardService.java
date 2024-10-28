@@ -200,7 +200,7 @@ public class BoardService {
         List<Board> boardList = queryFactory
                 .selectFrom(board)
                 .leftJoin(comment).on(comment.boardId.eq(board.id))
-                .where(myApplyFilters(category)
+                .where(myApplyFilters(category, clientUser.getUserId())
                         .and(isAdoptedFilter != null ? (isAdoptedFilter ? board.adoptionId.isNotNull() : board.adoptionId.isNull()) : null))
                 .groupBy(board.id)
                 .orderBy(getMyPageSortOrder(board).toArray(new OrderSpecifier[0]))
@@ -250,12 +250,16 @@ public class BoardService {
         return orderSpecifiers;
     }
 
-    private BooleanExpression myApplyFilters(String category) {
+    private BooleanExpression myApplyFilters(String category, String userId) {
         QBoard board = QBoard.board;
         BooleanExpression predicate = board.isNotNull(); // 기본 조건
 
         if (category != null && !category.isEmpty()) {
             predicate = predicate.and(board.category.eq(category));
+        }
+
+        if (userId != null && !userId.isEmpty()) {
+            predicate = predicate.and(board.userId.eq(userId));
         }
 
         return predicate;

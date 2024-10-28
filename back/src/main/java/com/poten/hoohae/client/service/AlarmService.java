@@ -3,6 +3,7 @@ package com.poten.hoohae.client.service;
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.domain.Alarm;
+import com.poten.hoohae.client.domain.Image;
 import com.poten.hoohae.client.dto.res.AlarmResponseDto;
 import com.poten.hoohae.client.repository.AlarmRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
@@ -29,31 +30,43 @@ public class AlarmService {
     private final BoardRepository boardRepository;
 
     public List<AlarmResponseDto> getAlarmList(int page, String email) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        User user = optionalUser.get();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Pageable pageable = PageRequest.of(page - 1, 5);
-
         Page<Alarm> alarms = alarmRepository.findAllByUserIdOrderByIdAsc(pageable, user.getUserId());
 
-        List<AlarmResponseDto> dto = alarms.getContent().stream()
-                .map(a -> AlarmResponseDto.builder()
-                        .id(a.getId())
-                        .nickname(a.getNickname())
-                        .body(a.getBody())
-                        .msg(a.getMsg())
-                        .image(a.getType().equals("adopt") ? imageRepository.findByImage(3L)
-                                : a.getType().equals("like") ? imageRepository.findByImage(6L)
-                                : imageRepository.findByImage(9L))
-                        .isAlive(a.getType().equals("comment") ? (commentRepository.findById(a.getCommentId()).isPresent() && boardRepository.findById(a.getBoardId()).isPresent())
-                                : a.getType().equals("like") ? (commentRepository.findById(a.getCommentId()).isPresent() && boardRepository.findById(a.getBoardId()).isPresent())
-                                : (commentRepository.findById(a.getCommentId()).isPresent() && boardRepository.findById(a.getBoardId()).isPresent()))
-                        .age(a.getAge())
-                        .page(getCommentPageNumber(a.getBoardId(), a.getCommentId()))
-                        .build())
-                .collect(Collectors.toList());
+        return alarms.getContent().stream()
+                .map(a -> {
+                    Long commentId = a.getCommentId();
+                    Long boardId = a.getBoardId();
 
-        return dto;
+                    boolean commentExists = commentId != null && commentRepository.findById(commentId).isPresent();
+                    boolean boardExists = boardId != null && boardRepository.findById(boardId).isPresent();
+
+                    return AlarmResponseDto.builder()
+                            .id(a.getId())
+                            .nickname(a.getNickname())
+                            .body(a.getBody())
+                            .msg(a.getMsg())
+                            .image(getImageByType(a.getType()))
+                            .isAlive(commentExists && boardExists)
+                            .age(a.getAge())
+                            .page(getCommentPageNumber(boardId, commentId))
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    private String getImageByType(String type) {
+        switch (type) {
+            case "adopt":
+                return imageRepository.findByImage(3L);
+            case "like":
+                return imageRepository.findByImage(6L);
+            default:
+                return imageRepository.findByImage(9L);
+        }
     }
 
     public int getCommentPageNumber(Long boardId, Long commentId) {

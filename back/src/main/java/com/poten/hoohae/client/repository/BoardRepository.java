@@ -5,6 +5,7 @@ import com.poten.hoohae.client.dto.res.BoardResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -62,4 +63,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("SELECT b.category, COUNT(b) FROM Board b WHERE b.userId = :userId GROUP BY b.category ORDER BY COUNT(b) DESC")
     List<Object[]> countByUserIdGroupByCategoryTop3(@Param("userId") String userId, Pageable pageable);
+
+    List<Board> findByUserId(String id);
+
+    @Modifying
+    @Query("UPDATE Board b SET b.nickname = :newNickname WHERE b.nickname = :oldNickname")
+    void updateNickname(@Param("oldNickname") String oldNickname, @Param("newNickname") String newNickname);
+
 }

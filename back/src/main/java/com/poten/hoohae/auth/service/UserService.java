@@ -7,9 +7,9 @@ import com.poten.hoohae.auth.dto.res.Result;
 import com.poten.hoohae.auth.dto.res.UserResponseDto;
 import com.poten.hoohae.auth.provider.JwtProvider;
 import com.poten.hoohae.auth.repository.UserRepository;
-import com.poten.hoohae.client.domain.Image;
+import com.poten.hoohae.client.domain.*;
 import com.poten.hoohae.client.dto.res.ImageDto;
-import com.poten.hoohae.client.repository.ImageRepository;
+import com.poten.hoohae.client.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,11 @@ public class UserService {
     private final ImageRepository imageRepository;
     private final JwtProvider jwtProvider;
 
+    private final BoardRepository boardRepository;
+    private final VoteRepository voteRepository;
+    private final CommentRepository commentRepository;
+    private final AlarmRepository alarmRepository;
+
     public String returnUserId (String id) {
         Optional<User> user = userRepository.findByEmail(id);
         String userId = user.map(User::getUserId).orElse(null);
@@ -34,22 +39,28 @@ public class UserService {
         return userId;
     }
 
+    @Transactional
     public Long updateProfile(UserRequestDto dto, String userId) {
         Optional<User> userOptional = userRepository.findByEmail(userId);
         if (!userOptional.isPresent()) {
             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
         }
-        User user = User.builder()
-                .id(userOptional.get().getId())
-                .email(userId)
-                .age(dto.getAge())
-                .nickname(dto.getNickname())
-                .characterId(dto.getCharacterId())
-                .userId(userOptional.get().getUserId())
-                .role("ROLE_USER")
-                .createdAt(userOptional.get().getCreatedAt())
-                .build();
-        userRepository.save(user);
+
+        User user = userOptional.get();
+        String oldNickname = user.getNickname();  // 기존 nickname
+        String newNickname = dto.getNickname();   // 새로운 nickname
+
+        // User 엔티티의 nickname이 변경될 경우 관련된 엔티티들의 nickname도 업데이트
+        if (!oldNickname.equals(newNickname)) {
+            boardRepository.updateNickname(oldNickname, newNickname);
+            voteRepository.updateNickname(oldNickname, newNickname);
+            commentRepository.updateNickname(oldNickname, newNickname);
+            alarmRepository.updateNickname(oldNickname, newNickname);
+        }
+
+        user.setAge(dto.getAge());
+        user.setNickname(newNickname);
+        user.setCharacterId(dto.getCharacterId());
 
         return userRepository.save(user).getId();
     }

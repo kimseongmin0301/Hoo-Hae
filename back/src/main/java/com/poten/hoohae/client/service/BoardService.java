@@ -148,7 +148,7 @@ public class BoardService {
 
         List<Board> boardList = queryFactory
                 .selectFrom(board)
-                .leftJoin(scrap).on(scrap.userId.eq(board.userId))
+                .leftJoin(scrap).on(scrap.boardId.eq(board.id)) // 변경된 부분
                 .where(myApplyScrapFilters(category))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

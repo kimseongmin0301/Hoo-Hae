@@ -44,6 +44,21 @@ public class MyPageController {
         return ResponseEntity.ok(pagingDto);
     }
 
+    @GetMapping("/board/report")
+    public ResponseEntity<PagingDto> getReportList(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "category", required = false) String category
+            , Authentication authentication) {
+
+        long totalItemCnt = boardService.myTotalBoardCnt(authentication.getName());
+        PagingDto pagingDto = PagingDto.builder()
+                .hasPage(Paging.hasPage(page, totalItemCnt))
+                .data(boardService.getReportList(page, category, authentication.getName()))
+                .build();
+
+        return ResponseEntity.ok(pagingDto);
+    }
+
     @GetMapping("/scrap/list")
     public ResponseEntity<PagingDto> getMyPageScrapList(
             @RequestParam(value = "page", defaultValue = "1") int page,

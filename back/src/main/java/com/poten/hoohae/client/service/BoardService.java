@@ -242,6 +242,57 @@ public class BoardService {
         return responseDtos;
     }
 
+    public List<BoardResponseDto> getReportList(int page, String category, String email) {
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
+
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        List<Board> boardList = queryFactory
+                .selectFrom(board)
+                .leftJoin(comment).on(comment.boardId.eq(board.id))
+                .where(myApplyFilters(category, clientUser.getUserId()))
+                .groupBy(board.id)
+                .orderBy(getMyPageSortOrder(board).toArray(new OrderSpecifier[0]))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<BoardResponseDto> responseDtos = boardList.stream()
+                .map(b -> {
+                    long commentCnt = commentRepository.countCommentByBoardId(b.getId());
+                    long voteCnt = b.getVote();
+                    Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
+                    User user = optionalUser.get();
+                    String img = imageRepository.findByImage(user.getCharacterId());
+                    return BoardResponseDto.builder()
+                            .id(b.getId())
+                            .subject(b.getSubject())
+                            .body(b.getBody())
+                            .vote(voteCnt)
+                            .commentCnt(commentCnt)
+                            .thumbnail(b.getThumbnail())
+                            .userId(b.getUserId())
+                            .age(b.getAge())
+                            .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
+                            .isAdopte(b.getAdoptionId() != null)  // isAdopte 설정
+                            .isBookmark(scrapRepository.findByBoardId(b.getId()) != null ? true : false)
+                            .nickname(b.getNickname())
+                            .category(b.getCategory())
+                            .type(b.getType())
+                            .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+                            .img(img)
+                            .question(questionService.getTodayQuestion(today).getBody())
+                            .isQuestion(b.getQuestion().equals("Y") ? true : false)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return responseDtos;
+    }
+
     private List<OrderSpecifier<?>> getMyPageSortOrder(QBoard board) {
         List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
 

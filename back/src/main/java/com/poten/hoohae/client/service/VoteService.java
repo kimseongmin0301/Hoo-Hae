@@ -69,6 +69,7 @@ public class VoteService {
                         .createdAt(board.getCreatedAt())
                         .type(board.getType())
                         .question(board.getQuestion())
+                        .adoptionId(board.getAdoptionId())
                         .build();
 
                 boardRepository.save(board);
@@ -105,6 +106,8 @@ public class VoteService {
                         .createdAt(board.getCreatedAt())
                         .type(board.getType())
                         .question(board.getQuestion())
+                        .adoptionId(board.getAdoptionId())
+
                         .build();
 
                 boardRepository.save(board);

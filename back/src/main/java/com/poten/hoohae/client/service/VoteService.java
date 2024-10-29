@@ -76,7 +76,7 @@ public class VoteService {
 
                 if(!user.getUserId().equals(board.getUserId())) {
                     Alarm alarm = Alarm.builder()
-                            .userId(user.getUserId())
+                            .userId(board.getUserId())
                             .body(board.getBody())
                             .nickname(user.getNickname())
                             .type("like")
@@ -140,7 +140,7 @@ public class VoteService {
                 commentRepository.save(comment);
                 if(!user.getUserId().equals(comment.getUserId())) {
                     Alarm alarm = Alarm.builder()
-                            .userId(user.getUserId())
+                            .userId(comment.getUserId())
                             .body(comment.getBody())
                             .nickname(user.getNickname())
                             .type("like")

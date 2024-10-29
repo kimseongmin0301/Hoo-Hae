@@ -62,7 +62,7 @@ public class AdoptedService {
 
         if(!user.getUserId().equals(comment.getUserId())) {
             Alarm alarm = Alarm.builder()
-                    .userId(user.getUserId())
+                    .userId(board.getUserId())
                     .body(board.getBody())
                     .nickname(user.getNickname())
                     .type("adopted")

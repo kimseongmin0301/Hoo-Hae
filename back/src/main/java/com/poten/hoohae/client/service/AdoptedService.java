@@ -67,8 +67,8 @@ public class AdoptedService {
                     .nickname(user.getNickname())
                     .type("adopted")
                     .msg(String.valueOf(AlarmEnum.ADOPTED))
-                    .commentId(null)
-                    .boardId(id)
+                    .commentId(id)
+                    .boardId(board.getId())
                     .age(user.getAge())
                     .build();
             alarmRepository.save(alarm);

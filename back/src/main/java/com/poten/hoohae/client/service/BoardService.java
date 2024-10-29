@@ -139,10 +139,12 @@ public class BoardService {
         return predicate;
     }
 
-    public List<BoardResponseDto> getMyScrapList(int page, String category) {
+    public List<BoardResponseDto> getMyScrapList(int page, String category, String email) {
         QBoard board = QBoard.board;
         QComment comment = QComment.comment;
         QScrap scrap = QScrap.scrap;
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
 
         Pageable pageable = PageRequest.of(page - 1, 5);
 
@@ -177,7 +179,7 @@ public class BoardService {
                             .nickname(b.getNickname())
                             .category(b.getCategory())
                             .type(b.getType())
-                            .isBookmark(scrapRepository.findByBoardId(user.getUserId(), b.getId()) != null ? true : false)
+                            .isBookmark(scrapRepository.findByBoardId(clientUser.getUserId(), b.getId()) != null ? true : false)
                             .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
                             .img(img)
                             .question(questionService.getTodayQuestion(today).getBody())

@@ -68,7 +68,7 @@ public class MyPageController {
         long totalItemCnt = boardService.myScrapCnt(authentication.getName());
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
-                .data(boardService.getMyScrapList(page, category))
+                .data(boardService.getMyScrapList(page, category, authentication.getName()))
                 .build();
 
         return ResponseEntity.ok(pagingDto);

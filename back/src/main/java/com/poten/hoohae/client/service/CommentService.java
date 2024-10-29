@@ -48,20 +48,23 @@ public class CommentService {
         String img = imageRepository.findByImage(user.getCharacterId());
 
         return comment.getContent().stream()
-                .map(c -> CommentResponseDto.builder()
-                        .boardId(c.getBoardId())
-                        .userId(c.getUserId())
-                        .id(c.getId())
-                        .nickname(c.getNickname())
-                        .age(c.getAge())
-                        .vote(c.getVote())
-                        .body(c.getBody())
-                        .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
-                        .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
-                        .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
-                        .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment", user.getUserId()) != null ? true : false)
-                        .img(img)
-                        .build())
+                .map(c -> {
+                    User commentUser = userRepository.findByUserId(c.getUserId()).get();
+                    return CommentResponseDto.builder()
+                            .boardId(c.getBoardId())
+                            .userId(c.getUserId())
+                            .id(c.getId())
+                            .nickname(c.getNickname())
+                            .age(c.getAge())
+                            .vote(c.getVote())
+                            .body(c.getBody())
+                            .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
+                            .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
+                            .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
+                            .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment", user.getUserId()) != null ? true : false)
+                            .img(imageRepository.findByImage(commentUser.getCharacterId()))
+                            .build();
+                })
                 .sorted(Comparator.comparing(CommentResponseDto::getIsAdopted).reversed())
                 .collect(Collectors.toList());
     }

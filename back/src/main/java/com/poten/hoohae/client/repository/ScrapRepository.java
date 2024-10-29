@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
-    @Query("select s.boardId from Scrap s where s.boardId = :id ")
-    Long findByBoardId(@Param("id") Long id);
+    @Query("select s.boardId from Scrap s where s.userId = :userId and s.boardId = :boardId")
+    Long findByBoardId(@Param("userId") String userId, @Param("boardId")Long boardId);
 
     Optional<Scrap> findScrapByBoardId(Long id);
 

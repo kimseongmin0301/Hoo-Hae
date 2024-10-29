@@ -83,10 +83,10 @@ public class CommentService {
                 .build();
 
         long result = commentRepository.save(comment).getId();
+        Optional<Board> optionalBoard = boardRepository.findById(dto.getBoardId());
+        Board board = optionalBoard.get();
+        if(!user.getUserId().equals(board.getUserId())) {
 
-        if(!user.getUserId().equals(dto.getUserId())) {
-            Optional<Board> optionalBoard = boardRepository.findById(dto.getBoardId());
-            Board board = optionalBoard.get();
             Alarm alarm = Alarm.builder()
                     .userId(board.getUserId())
                     .body(dto.getBody())

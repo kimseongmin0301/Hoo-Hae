@@ -174,7 +174,7 @@ public class BoardService {
                             .thumbnail(b.getThumbnail())
                             .userId(b.getUserId())
                             .age(b.getAge())
-                            .isVoted(vote)
+                            .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
                             .isAdopte(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())

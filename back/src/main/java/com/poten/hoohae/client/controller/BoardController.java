@@ -59,7 +59,12 @@ public class BoardController {
     @PostMapping(value = "/save", consumes = "multipart/form-data")
     public ResponseEntity<Long> saveBoard(@ModelAttribute BoardRequestDto dto, Authentication authentication) throws IOException {
         try {
-            Long savedBoardId = boardService.saveBoard(dto, authentication.getName());
+            Long savedBoardId;
+            if(dto.getId() == null) {
+                savedBoardId = boardService.saveBoard(dto, authentication.getName());
+            } else {
+                savedBoardId = boardService.updateBoard(dto, authentication.getName());
+            }
             return ResponseEntity.ok(savedBoardId);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(null);

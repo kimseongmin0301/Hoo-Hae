@@ -411,6 +411,64 @@ public class BoardService {
         return id;
     }
 
+    @Transactional
+    public Long updateBoard(BoardRequestDto dto, String userId) throws IOException {
+        Optional<User> userOptional = userRepository.findByEmail(userId);
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+        }
+        User user = userOptional.get();
+
+        fileRepository.deleteByBoardId(dto.getId());
+
+        List<MultipartFile> images = dto.getImage();
+        String thumbnailUrl = "";
+        List<Map<String, String>> imageUrls = new ArrayList<>();
+
+        if(images == null) {
+
+        } else if (images.size() > 3) {
+            throw new IllegalArgumentException("이미지 수가 3개를 초과합니다.");
+        } else {
+            imageUrls = s3Service.uploadFiles(images);
+            thumbnailUrl = imageUrls.isEmpty() ? null : imageUrls.get(0).get("link");
+        }
+
+        Optional<Board> optionalBoard = boardRepository.findById(dto.getId());
+        Board board = optionalBoard.get();
+
+        // 게시글 데이터 저장
+        Board updateBoard = Board.builder()
+                .id(board.getId())
+                .userId(board.getUserId())
+                .nickname(board.getNickname())
+                .subject(dto.getSubject())
+                .body(dto.getBody())
+                .thumbnail(thumbnailUrl) // 썸네일 설정
+                .vote(board.getVote()) // 초기 투표 수
+                .age(board.getAge())
+                .category(board.getCategory())
+                .type(board.getType())
+                .question(board.getQuestion())
+                .createdAt(board.getCreatedAt())
+                .adoptionId(board.getAdoptionId())
+                .build();
+        Long id = boardRepository.save(updateBoard).getId();
+
+        for (Map<String, String> imageUrl : imageUrls) {
+            File file = File.builder()
+                    .name(imageUrl.get("name"))
+                    .orgName(imageUrl.get("orgName"))
+                    .boardId(id)
+                    .link(imageUrl.get("link"))
+                    .build();
+
+            fileRepository.save(file);
+        }
+
+        return id;
+    }
+
     public BoardResponseDto getBoard(Long id, String email) {
         Optional<User> optionalClient = userRepository.findByEmail(email);
         User clientUser = optionalClient.get();

@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardRequestDto {
+    private Long id;
     private String subject;
     private String body;
     private List<MultipartFile> image;

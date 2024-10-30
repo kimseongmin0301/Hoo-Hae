@@ -13,4 +13,6 @@ public interface FileRepository extends JpaRepository<File, Long> {
 
     @Query("select f.link from File f where f.boardId = :boardId")
     List<String> findByName(@Param("boardId") Long boardId);
+
+    void deleteByBoardId(Long boardId);
 }

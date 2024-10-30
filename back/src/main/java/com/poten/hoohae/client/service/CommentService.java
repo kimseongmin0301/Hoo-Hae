@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ public class CommentService {
                             .body(c.getBody())
                             .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
                             .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
-                            .isAdopted(board.getAdoptionId().equals(c.getId()) ? true : false)
+                            .isAdopted(Objects.equals(board.getAdoptionId(), c.getId()) ? true : false)
                             .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment", user.getUserId()) != null ? true : false)
                             .img(imageRepository.findByImage(commentUser.getCharacterId()))
                             .build();

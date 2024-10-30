@@ -11,6 +11,7 @@ import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.dto.req.CommentRequestDto;
 import com.poten.hoohae.client.dto.res.CommentResponseDto;
 import com.poten.hoohae.client.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -69,6 +70,7 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Long saveComment(CommentRequestDto dto, String userId) {
         Optional<User> userOptional = userRepository.findByEmail(userId);
         if (!userOptional.isPresent()) {
@@ -106,6 +108,7 @@ public class CommentService {
         return result;
     }
 
+    @Transactional
     public Long updateComment(Long id, CommentRequestDto dto, String userId) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException());
         Optional<User> optionalUser = userRepository.findByEmail(userId);
@@ -130,6 +133,7 @@ public class CommentService {
         return commentRepository.save(comment).getId();
     }
 
+    @Transactional
     public Long deleteComment(Long id, String userId) {
         Optional<User> userOptional = userRepository.findByEmail(userId);
         if (!userOptional.isPresent()) {

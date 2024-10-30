@@ -9,6 +9,7 @@ import com.poten.hoohae.client.domain.Comment;
 import com.poten.hoohae.client.repository.AlarmRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
 import com.poten.hoohae.client.repository.CommentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class AdoptedService {
     private final BoardRepository boardRepository;
     private final AlarmRepository alarmRepository;
 
+    @Transactional
     public Long adopted(Long id, String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user = optionalUser.get();

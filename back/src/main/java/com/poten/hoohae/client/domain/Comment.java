@@ -28,7 +28,6 @@ public class Comment {
     private String nickname;
 
     @Column(name = "BODY", columnDefinition = "TEXT")
-    @Size(max = 500)
     private String body;
 
     @Column(name = "AGE")

@@ -51,6 +51,7 @@ public class CommentService {
         return comment.getContent().stream()
                 .map(c -> {
                     User commentUser = userRepository.findByUserId(c.getUserId()).get();
+
                     return CommentResponseDto.builder()
                             .boardId(c.getBoardId())
                             .userId(c.getUserId())
@@ -61,7 +62,7 @@ public class CommentService {
                             .body(c.getBody())
                             .createdAt(DateFormat.yyyyMMdd(c.getCreatedAt()))
                             .isWriter(c.getUserId().equals(user.getUserId()) ? true : false)
-                            .isAdopted(board.getAdoptionId() == c.getId() ? true : false)
+                            .isAdopted(board.getAdoptionId().equals(c.getId()) ? true : false)
                             .isVoted(voteRepository.findByCommentNickname(c.getId(), "comment", user.getUserId()) != null ? true : false)
                             .img(imageRepository.findByImage(commentUser.getCharacterId()))
                             .build();

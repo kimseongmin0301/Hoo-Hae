@@ -26,7 +26,7 @@ public class Board {
     @Column(name = "SUBJECT")
     private String subject;
 
-    @Column(name = "BODY")
+    @Column(name = "BODY", columnDefinition = "TEXT")
     private String body;
 
     @Column(name = "VOTE")

@@ -26,7 +26,7 @@ public class Comment {
     @Column(name = "NICKNAME")
     private String nickname;
 
-    @Column(name = "BODY")
+    @Column(name = "BODY", columnDefinition = "TEXT")
     private String body;
 
     @Column(name = "AGE")

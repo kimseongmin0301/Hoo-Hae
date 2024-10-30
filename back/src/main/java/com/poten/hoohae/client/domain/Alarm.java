@@ -1,6 +1,7 @@
 package com.poten.hoohae.client.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Table(name = "ALARM")
@@ -22,6 +23,7 @@ public class Alarm {
     private String nickname;
 
     @Column(name = "BODY", columnDefinition = "TEXT")
+    @Size(max = 500)
     private String body;
 
     @Column(name = "MSG")

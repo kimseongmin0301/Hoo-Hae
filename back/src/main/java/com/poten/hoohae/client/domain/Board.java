@@ -1,6 +1,7 @@
 package com.poten.hoohae.client.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class Board {
     private String subject;
 
     @Column(name = "BODY", columnDefinition = "TEXT")
+    @Size(max = 500)
     private String body;
 
     @Column(name = "VOTE")

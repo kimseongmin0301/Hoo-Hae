@@ -68,7 +68,6 @@ public class CommentService {
                             .img(imageRepository.findByImage(commentUser.getCharacterId()))
                             .build();
                 })
-                .sorted(Comparator.comparing(CommentResponseDto::getIsAdopted).reversed())
                 .collect(Collectors.toList());
     }
 

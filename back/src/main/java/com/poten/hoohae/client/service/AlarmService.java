@@ -40,9 +40,14 @@ public class AlarmService {
                 .map(a -> {
                     Long commentId = a.getCommentId();
                     Long boardId = a.getBoardId();
-
-                    boolean commentExists = commentId != null && commentRepository.findById(commentId).isPresent();
-                    boolean boardExists = boardId != null && boardRepository.findById(boardId).isPresent();
+                    boolean commentExists = true;
+                    boolean boardExists = true;
+                    if (commentId != null) {
+                        commentExists = commentRepository.findById(commentId).isPresent();
+                    }
+                    if(boardId != null) {
+                        boardExists = boardRepository.findById(boardId).isPresent();
+                    }
 
                     return AlarmResponseDto.builder()
                             .id(a.getId())

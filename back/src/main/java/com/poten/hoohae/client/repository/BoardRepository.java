@@ -70,4 +70,19 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("UPDATE Board b SET b.nickname = :newNickname, b.age = :age WHERE b.nickname = :oldNickname")
     void updateNickname(@Param("oldNickname") String oldNickname, @Param("newNickname") String newNickname, @Param("age") Long age);
 
+    @Query("SELECT COUNT(b) FROM Board b " +
+            "WHERE b.category = :category " +
+            "AND b.userId = :userId " +
+            "AND (:isAdopted IS NULL " +
+            "     OR (:isAdopted = TRUE AND b.adoptionId IS NOT NULL) " +
+            "     OR (:isAdopted = FALSE AND b.adoptionId IS NULL))")
+    long countByCategoryAndUserIdAndIsAdopted(
+            @Param("category") String category,
+            @Param("userId") String userId,
+            @Param("isAdopted") Boolean isAdopted);
+
+    @Query("SELECT COUNT(b) FROM Board b " +
+            "WHERE b.category = :category " +
+            "AND b.userId = :userId ")
+    long countByCategoryAndUserId(@Param("category") String category, @Param("userId") String userId);
 }

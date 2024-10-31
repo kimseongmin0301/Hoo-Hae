@@ -35,9 +35,10 @@ public class MyPageController {
             @RequestParam(value = "isAdopted", defaultValue = "false") Boolean isAdopted,
             Authentication authentication) {
 
-        long totalItemCnt = boardService.myTotalBoardCnt(authentication.getName());
+        long totalItemCnt = boardService.myBoardListCnt(authentication.getName(), category, isAdopted);
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
+                .totalCnt(totalItemCnt)
                 .data(boardService.getMyBoardList(page, category, isAdopted, authentication.getName()))
                 .build();
 
@@ -50,9 +51,10 @@ public class MyPageController {
             @RequestParam(value = "category", required = false) String category
             , Authentication authentication) {
 
-        long totalItemCnt = boardService.myTotalBoardCnt(authentication.getName());
+        long totalItemCnt = boardService.myBoardReportCnt(authentication.getName(), category);
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
+                .totalCnt(totalItemCnt)
                 .data(boardService.getReportList(page, category, authentication.getName()))
                 .build();
 
@@ -65,9 +67,10 @@ public class MyPageController {
             @RequestParam(value = "category") String category,
             Authentication authentication) {
 
-        long totalItemCnt = boardService.myScrapCnt(authentication.getName());
+        long totalItemCnt = boardService.myScrapCnt(authentication.getName(), category);
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
+                .totalCnt(totalItemCnt)
                 .data(boardService.getMyScrapList(page, category, authentication.getName()))
                 .build();
 

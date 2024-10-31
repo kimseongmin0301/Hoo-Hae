@@ -198,6 +198,8 @@ public class BoardService {
         QComment comment = QComment.comment;
 
         Pageable pageable = PageRequest.of(page - 1, 5);
+        System.out.println(pageable.getOffset());
+        System.out.println(pageable.getPageSize());
 
         List<Board> boardList = queryFactory
                 .selectFrom(board)
@@ -340,11 +342,25 @@ public class BoardService {
         return boardRepository.countByUserId(user.getUserId());
     }
 
-    public long myScrapCnt(String email) {
+    public long myBoardListCnt(String email, String category, Boolean isAdopted) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         User user = optionalUser.get();
 
-        return scrapRepository.countByUserId(user.getUserId());
+        return boardRepository.countByCategoryAndUserIdAndIsAdopted(category, user.getUserId(), isAdopted);
+    }
+
+    public long myBoardReportCnt(String email, String category) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+
+        return boardRepository.countByCategoryAndUserId(category, user.getUserId());
+    }
+
+    public long myScrapCnt(String email, String category) {
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        User user = optionalUser.get();
+
+        return scrapRepository.countByUserIdAndCategory(user.getUserId(), category);
     }
 
     public long totalBoardCnt(Long age, String sort) {

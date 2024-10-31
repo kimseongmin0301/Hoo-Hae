@@ -17,6 +17,8 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long> {
 
     long countByUserId(String userId);
 
+    long countByUserIdAndCategory(String userId, String category);
+
     @Query("select s.category, count(s) from Scrap s where s.userId = :userId group by s.category")
     List<Object[]> countScrapByCategory(@Param("userId") String userId);
 }

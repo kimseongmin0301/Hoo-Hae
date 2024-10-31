@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -31,16 +33,22 @@ public class CommentController {
         return ResponseEntity.ok(pagingDto);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<Long> saveComment(@RequestBody CommentRequestDto dto, Authentication authentication) {
+    @PostMapping(value = "/save", consumes = "multipart/form-data")
+    public ResponseEntity<Long> saveComment(@ModelAttribute CommentRequestDto dto, Authentication authentication) throws IOException {
         log.info("comment save");
-        Long id = commentService.saveComment(dto, authentication.getName());
+
+        Long id = 0L;
+        if(dto.getId() != null) {
+            id = commentService.saveComment(dto, authentication.getName());
+        } else {
+            id = commentService.updateComment(id, dto, authentication.getName());
+        }
 
         return ResponseEntity.ok(id);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Long> updateComment(@PathVariable(name = "id") Long id, @RequestBody CommentRequestDto dto, Authentication authentication){
+    public ResponseEntity<Long> updateComment(@PathVariable(name = "id") Long id, @RequestBody CommentRequestDto dto, Authentication authentication) throws IOException {
         log.info("update comment");
         Long commentId = commentService.updateComment(id, dto, authentication.getName());
 

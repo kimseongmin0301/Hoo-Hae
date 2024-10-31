@@ -22,6 +22,7 @@ public class AlarmController {
         long totalItemCnt = alarmService.getAlarmCnt(authentication.getName());
         PagingDto dto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
+                .totalCnt(totalItemCnt)
                 .data(alarmService.getAlarmList(page, authentication.getName()))
                 .build();
 

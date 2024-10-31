@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,4 +21,5 @@ public class CommentResponseDto {
     private String createdAt;
     private String img;
     private Boolean isVoted;
+    private String commentImage;
 }

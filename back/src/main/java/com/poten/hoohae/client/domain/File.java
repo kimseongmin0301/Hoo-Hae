@@ -31,6 +31,9 @@ public class File {
     @Column(name = "BOARD_ID")
     private Long boardId;
 
+    @Column(name = "COMMENT_ID")
+    private Long commentId;
+
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 

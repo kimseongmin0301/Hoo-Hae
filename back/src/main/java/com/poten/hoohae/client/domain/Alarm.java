@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Table(name = "ALARM")
 @Entity
 @Builder
@@ -38,6 +40,14 @@ public class Alarm {
     @Column(name = "COMMENT_ID")
     private Long commentId;
 
-    @Column(name = "age")
+    @Column(name = "AGE")
     private Long age;
+
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

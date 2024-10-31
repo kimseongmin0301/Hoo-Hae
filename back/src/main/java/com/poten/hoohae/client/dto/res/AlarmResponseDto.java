@@ -3,6 +3,8 @@ package com.poten.hoohae.client.dto.res;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Builder
 @Data
 public class AlarmResponseDto {
@@ -14,4 +16,6 @@ public class AlarmResponseDto {
     private Boolean isAlive;
     private Long age;
     private int page;
+    private Long boardId;
+    private LocalDateTime createdAt;
 }

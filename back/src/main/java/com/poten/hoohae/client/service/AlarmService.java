@@ -3,7 +3,6 @@ package com.poten.hoohae.client.service;
 import com.poten.hoohae.auth.domain.User;
 import com.poten.hoohae.auth.repository.UserRepository;
 import com.poten.hoohae.client.domain.Alarm;
-import com.poten.hoohae.client.domain.Image;
 import com.poten.hoohae.client.dto.res.AlarmResponseDto;
 import com.poten.hoohae.client.repository.AlarmRepository;
 import com.poten.hoohae.client.repository.BoardRepository;
@@ -51,6 +50,7 @@ public class AlarmService {
 
                     return AlarmResponseDto.builder()
                             .id(a.getId())
+                            .boardId(boardId)
                             .nickname(a.getNickname())
                             .body(a.getBody())
                             .msg(a.getMsg())
@@ -58,6 +58,7 @@ public class AlarmService {
                             .isAlive(commentExists && boardExists)
                             .age(a.getAge())
                             .page(getCommentPageNumber(boardId, commentId))
+                            .createdAt(a.getCreatedAt())
                             .build();
                 })
                 .collect(Collectors.toList());

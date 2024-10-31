@@ -42,6 +42,23 @@ public class BoardController {
 
         return ResponseEntity.ok(pagingDto);
     }
+    @GetMapping("/search")
+    public ResponseEntity<PagingDto> getSearchList(@RequestParam(value = "page", defaultValue = "1") int page
+        , @RequestParam(value = "age", required = false) Long age
+            , @RequestParam(value = "category", required = false) String category
+            , @RequestParam(value = "sort", required = false) String sort
+            , @RequestParam(value = "query", required = false) String query
+            , Authentication authentication) {
+
+        long totalItemCnt = boardService.getSearchListCount(age, category, sort, query);
+        PagingDto pagingDto = PagingDto.builder()
+                .hasPage(Paging.hasPage(page, totalItemCnt))
+                .totalCnt(totalItemCnt)
+                .data(boardService.getSearchList(page, age, category, sort, query, authentication.getName()))
+                .build();
+
+        return ResponseEntity.ok(pagingDto);
+    }
 
     @GetMapping("/top5")
     public ResponseEntity<List<BoardResponseDto>> getTop5List(@RequestParam(value = "age", defaultValue = "0") Long age, Authentication authentication) {

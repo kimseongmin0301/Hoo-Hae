@@ -68,7 +68,6 @@ public class BoardService {
                     Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
                     User user = optionalUser.get();
                     String img = imageRepository.findByImage(user.getCharacterId());
-                    String voteId = voteRepository.findByUserId(b.getUserId(), b.getId());
 
                     return BoardResponseDto.builder()
                             .id(b.getId())
@@ -137,6 +136,100 @@ public class BoardService {
         }
 
         return predicate;
+    }
+
+    private BooleanExpression searchApplyFilters(Long age, String category, String sort, String query) {
+        QBoard board = QBoard.board;
+        BooleanExpression predicate = board.isNotNull(); // 기본 조건
+
+        if (age != null) {
+            predicate = predicate.and(board.age.eq(age));
+        }
+
+        if (category != null && !category.isEmpty()) {
+            predicate = predicate.and(board.category.eq(category));
+        }
+
+        if(sort != null && sort.equals("adopted")) {
+            predicate = predicate.and(board.adoptionId.isNotNull());
+        }
+
+        if (query != null && !query.isEmpty()) {
+            predicate = predicate.and(
+                    board.subject.likeIgnoreCase("%" + query + "%")
+                            .or(board.body.likeIgnoreCase("%" + query + "%"))
+            );
+        }
+
+        return predicate;
+    }
+
+    public List<BoardResponseDto> getSearchList(int page, Long age, String category, String sort, String query, String email) {
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
+
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        List<Board> boardList = queryFactory
+                .selectFrom(board)
+                .leftJoin(comment).on(comment.boardId.eq(board.id))
+                .where(searchApplyFilters(age, category, sort, query))
+                .groupBy(board.id)
+                .orderBy(getSortOrder(sort, board, comment).toArray(new OrderSpecifier[0]))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<BoardResponseDto> responseDtos = boardList.stream()
+                .map(b -> {
+                    long commentCnt = commentRepository.countCommentByBoardId(b.getId());
+                    long voteCnt = b.getVote();
+                    Optional<User> optionalUser = userRepository.findByUserId(b.getUserId());
+                    User user = optionalUser.get();
+                    String img = imageRepository.findByImage(user.getCharacterId());
+
+                    return BoardResponseDto.builder()
+                            .id(b.getId())
+                            .subject(b.getSubject())
+                            .body(b.getBody())
+                            .vote(voteCnt)
+                            .commentCnt(commentCnt)
+                            .thumbnail(b.getThumbnail())
+                            .userId(b.getUserId())
+                            .age(b.getAge())
+                            .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
+                            .isAdopte(b.getAdoptionId() != null)
+                            .nickname(b.getNickname())
+                            .category(b.getCategory())
+                            .isBookmark(scrapRepository.findByBoardId(clientUser.getUserId(), b.getId()) != null ? true : false)
+                            .type(b.getType())
+                            .createdAt(DateFormat.yyyyMMdd(b.getCreatedAt()))
+                            .img(img)
+                            .question(questionService.getTodayQuestion(today).getBody())
+                            .isQuestion(b.getQuestion().equals("Y") ? true : false)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return responseDtos;
+    }
+
+    public long getSearchListCount(Long age, String category, String sort, String query) {
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
+
+        long count = queryFactory
+                .select(board.id.countDistinct())
+                .from(board)
+                .leftJoin(comment).on(comment.boardId.eq(board.id))
+                .where(searchApplyFilters(age, category, sort, query))
+                .groupBy(board.id)
+                .fetch()
+                .size();
+
+        return count;
     }
 
     public List<BoardResponseDto> getMyScrapList(int page, String category, String email) {
@@ -364,6 +457,20 @@ public class BoardService {
     }
 
     public long totalBoardCnt(Long age, String sort) {
+        // sort가 null인 경우 기본 카운트를 반환
+        if (sort == null) {
+            return age == null ? boardRepository.count() : boardRepository.countBoardsByAge(age);
+        }
+
+        switch (sort) {
+            case "adopted":
+                return boardRepository.countBoardsByAdopted();
+            default:
+                return age == null ? boardRepository.count() : boardRepository.countBoardsByAge(age);
+        }
+    }
+
+    public long totalSearchCnt(Long age, String sort, String category, String query) {
         // sort가 null인 경우 기본 카운트를 반환
         if (sort == null) {
             return age == null ? boardRepository.count() : boardRepository.countBoardsByAge(age);

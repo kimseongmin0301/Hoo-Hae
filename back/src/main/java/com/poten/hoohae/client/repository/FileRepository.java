@@ -15,4 +15,9 @@ public interface FileRepository extends JpaRepository<File, Long> {
     List<String> findByName(@Param("boardId") Long boardId);
 
     void deleteByBoardId(Long boardId);
+
+    void deleteByCommentId(Long commentId);
+
+    @Query("select f.link from File f where f.commentId = :commentId ")
+    String findByCommentImage(@Param("commentId") Long commentId);
 }

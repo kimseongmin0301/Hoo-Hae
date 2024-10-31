@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DateFormat {
     public static String yyyyMMdd(LocalDateTime date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd(E) HH:mm");
         return date.format(dateFormatter);
     }
 }

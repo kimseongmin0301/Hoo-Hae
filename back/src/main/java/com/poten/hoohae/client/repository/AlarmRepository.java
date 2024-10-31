@@ -15,7 +15,7 @@ import java.util.List;
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     long countByUserId(String userId);
 
-    Page<Alarm> findAllByUserIdOrderByIdAsc(Pageable page, String userId);
+    Page<Alarm> findAllByUserIdOrderByIdDesc(Pageable page, String userId);
 
     List<Alarm> findByUserId(String id);
 

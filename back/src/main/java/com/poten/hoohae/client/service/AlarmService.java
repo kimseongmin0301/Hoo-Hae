@@ -34,7 +34,7 @@ public class AlarmService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Pageable pageable = PageRequest.of(page - 1, 5);
-        Page<Alarm> alarms = alarmRepository.findAllByUserIdOrderByIdAsc(pageable, user.getUserId());
+        Page<Alarm> alarms = alarmRepository.findAllByUserIdOrderByIdDesc(pageable, user.getUserId());
 
         return alarms.getContent().stream()
                 .map(a -> {

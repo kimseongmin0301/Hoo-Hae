@@ -38,7 +38,7 @@ public class CommentController {
         log.info("comment save");
 
         Long id = 0L;
-        if(dto.getId() != null) {
+        if(dto.getId() == null) {
             id = commentService.saveComment(dto, authentication.getName());
         } else {
             id = commentService.updateComment(id, dto, authentication.getName());

@@ -135,7 +135,9 @@ public class CommentService {
 
     @Transactional
     public Long updateComment(Long id, CommentRequestDto dto, String userId) throws IOException {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException());
+        Optional<Comment> optionalComment = commentRepository.findById(id);
+        Comment comment = optionalComment.get();
+
         Optional<User> optionalUser = userRepository.findByEmail(userId);
 
         if(!comment.getUserId().equals(optionalUser.get().getUserId())) {

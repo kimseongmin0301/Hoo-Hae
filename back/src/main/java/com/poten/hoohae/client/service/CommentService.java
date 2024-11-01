@@ -123,7 +123,6 @@ public class CommentService {
             File file = File.builder()
                     .name(imageUrl.get("name"))
                     .orgName(imageUrl.get("orgName"))
-                    .boardId(dto.getBoardId())
                     .commentId(id)
                     .link(imageUrl.get("link"))
                     .build();

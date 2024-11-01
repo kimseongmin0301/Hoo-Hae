@@ -107,7 +107,7 @@ public class CommentService {
         if(!user.getUserId().equals(board.getUserId())) {
 
             Alarm alarm = Alarm.builder()
-                    .userId(comment.getUserId())
+                    .userId(board.getUserId())
                     .body(dto.getBody())
                     .nickname(user.getNickname())
                     .type("comment")

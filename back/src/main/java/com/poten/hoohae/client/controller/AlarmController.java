@@ -1,12 +1,16 @@
 package com.poten.hoohae.client.controller;
 
 import com.poten.hoohae.client.common.Paging;
+import com.poten.hoohae.client.domain.Alarm;
 import com.poten.hoohae.client.dto.PagingDto;
 import com.poten.hoohae.client.service.AlarmService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +37,11 @@ public class AlarmController {
     public ResponseEntity<Long> deleteAlarm(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(alarmService.deleteAlarm(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Long> changeStatus(@PathVariable("id") Long id) {
+
+        return ResponseEntity.ok(alarmService.onClickAlarm(id));
     }
 }

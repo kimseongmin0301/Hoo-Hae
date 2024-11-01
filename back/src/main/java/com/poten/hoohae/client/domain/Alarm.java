@@ -46,8 +46,12 @@ public class Alarm {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
+    @Column(name = "STATUS")
+    private int status;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        status = 1;
     }
 }

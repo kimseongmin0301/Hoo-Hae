@@ -57,6 +57,7 @@ public class AlarmService {
                             .image(getImageByType(a.getType()))
                             .isAlive(commentExists && boardExists)
                             .age(a.getAge())
+                            .status(a.getStatus())
                             .page(getCommentPageNumber(boardId, commentId))
                             .createdAt(a.getCreatedAt())
                             .build();
@@ -99,5 +100,27 @@ public class AlarmService {
     public long deleteAlarm(Long id) {
         alarmRepository.deleteById(id);
         return id;
+    }
+
+    @Transactional
+    public Long onClickAlarm(Long id) {
+        Optional<Alarm> optionalAlarm = alarmRepository.findById(id);
+        Alarm alarm = optionalAlarm.get();
+
+        Alarm updateAlarm = Alarm.builder()
+                .id(id)
+                .body(alarm.getBody())
+                .msg(alarm.getMsg())
+                .nickname(alarm.getNickname())
+                .type(alarm.getType())
+                .userId(alarm.getUserId())
+                .boardId(alarm.getBoardId())
+                .commentId(alarm.getCommentId())
+                .age(alarm.getAge())
+                .status(0)
+                .createdAt(alarm.getCreatedAt())
+                .build();
+
+        return alarmRepository.save(updateAlarm).getId();
     }
 }

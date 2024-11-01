@@ -18,4 +18,5 @@ public class AlarmResponseDto {
     private int page;
     private Long boardId;
     private LocalDateTime createdAt;
+    private int status;
 }

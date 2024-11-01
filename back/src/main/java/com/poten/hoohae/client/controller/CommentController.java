@@ -41,7 +41,7 @@ public class CommentController {
         if(dto.getId() == null) {
             id = commentService.saveComment(dto, authentication.getName());
         } else {
-            id = commentService.updateComment(id, dto, authentication.getName());
+            id = commentService.updateComment(dto.getId(), dto, authentication.getName());
         }
 
         return ResponseEntity.ok(id);

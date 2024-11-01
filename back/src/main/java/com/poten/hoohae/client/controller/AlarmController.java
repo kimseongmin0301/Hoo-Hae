@@ -39,8 +39,8 @@ public class AlarmController {
         return ResponseEntity.ok(alarmService.deleteAlarm(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Long> changeStatus(@PathVariable("id") Long id) {
+    @PutMapping("/click/{id}")
+    public ResponseEntity<Long> clickStatus(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(alarmService.onClickAlarm(id));
     }

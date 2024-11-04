@@ -244,7 +244,7 @@ public class BoardService {
         List<Board> boardList = queryFactory
                 .selectFrom(board)
                 .leftJoin(scrap).on(scrap.boardId.eq(board.id)) // 변경된 부분
-                .where(myApplyScrapFilters(category))
+                .where(myApplyScrapFilters(category, clientUser.getUserId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -413,12 +413,12 @@ public class BoardService {
         return predicate;
     }
 
-    private BooleanExpression myApplyScrapFilters(String category) {
+    private BooleanExpression myApplyScrapFilters(String category, String userId) {
         QBoard board = QBoard.board;
         QScrap scrap = QScrap.scrap;
         BooleanExpression predicate = board.isNotNull();
 
-        predicate = predicate.and(scrap.boardId.eq(board.id));
+        predicate = predicate.and(scrap.boardId.eq(board.id)).and(scrap.userId.eq(userId));
 
         if (category != null && !category.isEmpty()) {
             predicate = predicate.and(board.category.eq(category));

@@ -291,8 +291,6 @@ public class BoardService {
         QComment comment = QComment.comment;
 
         Pageable pageable = PageRequest.of(page - 1, 5);
-        System.out.println(pageable.getOffset());
-        System.out.println(pageable.getPageSize());
 
         List<Board> boardList = queryFactory
                 .selectFrom(board)
@@ -435,11 +433,22 @@ public class BoardService {
         return boardRepository.countByUserId(user.getUserId());
     }
 
-    public long myBoardListCnt(String email, String category, Boolean isAdopted) {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
-        User user = optionalUser.get();
+    public long myBoardListCnt(String category, Boolean isAdoptedFilter, String email) {
+        Optional<User> optionalClient = userRepository.findByEmail(email);
+        User clientUser = optionalClient.get();
+        QBoard board = QBoard.board;
+        QComment comment = QComment.comment;
 
-        return boardRepository.countByCategoryAndUserIdAndIsAdopted(category, user.getUserId(), isAdopted);
+        List<Board> boardList = queryFactory
+                .selectFrom(board)
+                .leftJoin(comment).on(comment.boardId.eq(board.id))
+                .where(myApplyFilters(category, clientUser.getUserId())
+                        .and(isAdoptedFilter != null ? (isAdoptedFilter ? board.adoptionId.isNotNull() : board.adoptionId.isNull()) : null))
+                .groupBy(board.id)
+                .orderBy(getMyPageSortOrder(board).toArray(new OrderSpecifier[0]))
+                .fetch();
+
+        return boardList.size();
     }
 
     public long myBoardReportCnt(String email, String category) {

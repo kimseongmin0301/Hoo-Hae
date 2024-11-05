@@ -35,7 +35,7 @@ public class MyPageController {
             @RequestParam(value = "isAdopted", defaultValue = "false") Boolean isAdopted,
             Authentication authentication) {
 
-        long totalItemCnt = boardService.myBoardListCnt(authentication.getName(), category, isAdopted);
+        long totalItemCnt = boardService.myBoardListCnt(category, isAdopted, authentication.getName());
         PagingDto pagingDto = PagingDto.builder()
                 .hasPage(Paging.hasPage(page, totalItemCnt))
                 .totalCnt(totalItemCnt)

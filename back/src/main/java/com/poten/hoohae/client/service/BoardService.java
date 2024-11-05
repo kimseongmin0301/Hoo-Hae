@@ -79,7 +79,7 @@ public class BoardService {
                             .userId(b.getUserId())
                             .age(b.getAge())
                             .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
-                            .isAdopte(b.getAdoptionId() != null)
+                            .isAdopted(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
                             .isBookmark(scrapRepository.findByBoardId(clientUser.getUserId(), b.getId()) != null ? true : false)
@@ -200,7 +200,7 @@ public class BoardService {
                             .userId(b.getUserId())
                             .age(b.getAge())
                             .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
-                            .isAdopte(b.getAdoptionId() != null)
+                            .isAdopted(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
                             .isBookmark(scrapRepository.findByBoardId(clientUser.getUserId(), b.getId()) != null ? true : false)
@@ -268,7 +268,7 @@ public class BoardService {
                             .userId(b.getUserId())
                             .age(b.getAge())
                             .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
-                            .isAdopte(b.getAdoptionId() != null)
+                            .isAdopted(b.getAdoptionId() != null)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
                             .type(b.getType())
@@ -323,7 +323,7 @@ public class BoardService {
                             .userId(b.getUserId())
                             .age(b.getAge())
                             .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
-                            .isAdopte(b.getAdoptionId() != null)  // isAdopte 설정
+                            .isAdopted(b.getAdoptionId() != null)  // isAdopte 설정
                             .isBookmark(scrapRepository.findByBoardId(clientUser.getUserId(), b.getId()) != null ? true : false)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
@@ -374,7 +374,7 @@ public class BoardService {
                             .userId(b.getUserId())
                             .age(b.getAge())
                             .isVoted(!voteRepository.findByBoardIdAndUserId(b.getId(), clientUser.getUserId()).isEmpty())
-                            .isAdopte(b.getAdoptionId() != null)  // isAdopte 설정
+                            .isAdopted(b.getAdoptionId() != null)  // isAdopte 설정
                             .isBookmark(scrapRepository.findByBoardId(clientUser.getUserId(), b.getId()) != null ? true : false)
                             .nickname(b.getNickname())
                             .category(b.getCategory())
@@ -606,7 +606,7 @@ public class BoardService {
                 .body(board.getBody())
                 .nickname(board.getNickname())
                 .age(board.getAge())
-                .isAdopte(board.getAdoptionId() != null ? true : false)
+                .isAdopted(board.getAdoptionId() != null ? true : false)
                 .commentCnt(commentRepository.countCommentByBoardId(id))
                 .images(fileRepository.findByName(id))
                 .createdAt(DateFormat.yyyyMMdd(board.getCreatedAt()))
@@ -705,7 +705,7 @@ public class BoardService {
                     .commentCnt(commentCnt)
                     .isVoted(voteRepository.findByNickname(id, "board", user.getUserId()) != null ? true : false)
                     .vote(voteCnt)
-                    .isAdopte(isAdopte != null)
+                    .isAdopted(isAdopte != null)
                     .build();
         }).collect(Collectors.toList());
     }
@@ -728,7 +728,7 @@ public class BoardService {
 //                        .thumbnail(b.getThumbnail())
 //                        .userId(b.getUserId())
 //                        .age(b.getAge())
-//                        .isAdopte(b.getAdoptionId() != null)
+//                        .isAdopted(b.getAdoptionId() != null)
 //                        .nickname(b.getNickname())
 //                        .category(b.getCategory())
 //                        .type(b.getType())

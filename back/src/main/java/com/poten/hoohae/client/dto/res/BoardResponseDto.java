@@ -23,7 +23,7 @@ public class BoardResponseDto {
     private String thumbnail;
     private String userId;
     private Long age;
-    private Boolean isAdopte;
+    private Boolean isAdopted;
     private String nickname;
     private String category;
     private String type;

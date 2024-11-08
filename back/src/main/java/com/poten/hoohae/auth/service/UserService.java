@@ -61,6 +61,7 @@ public class UserService {
         user.setAge(dto.getAge());
         user.setNickname(newNickname);
         user.setCharacterId(dto.getCharacterId());
+        user.setRole("ROLE_USER");
 
         return userRepository.save(user).getId();
     }

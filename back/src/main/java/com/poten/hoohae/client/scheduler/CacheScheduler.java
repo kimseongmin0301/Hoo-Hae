@@ -21,6 +21,6 @@ public class CacheScheduler {
         cacheManager.getCache("todayQuestion").clear();
 
         // 새로운 질문을 캐시에 저장 (오늘 날짜 기준)
-        questionService.setTodayQuestion(LocalDate.now());
+        questionService.getTodayQuestion(LocalDate.now());
     }
 }

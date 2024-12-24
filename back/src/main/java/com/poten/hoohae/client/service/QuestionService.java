@@ -16,13 +16,11 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    @CachePut(value = "todayQuestion", key = "#today", condition = "#today != null")
-    public QuestionResponseDto setTodayQuestion(LocalDate today) {
-        // count가 가장 적은 질문을 랜덤하게 가져옴
+    @Cacheable(value = "todayQuestion", key = "#today", unless = "#result == null")
+    public synchronized QuestionResponseDto getTodayQuestion(LocalDate today) {
         Optional<Question> randomQuestionOptional = questionRepository.findRandomWithMinCount();
         if (randomQuestionOptional.isPresent()) {
             Question selectedQuestion = randomQuestionOptional.get();
-            // count 증가
             questionRepository.incrementCount(selectedQuestion.getId());
             return QuestionResponseDto.builder()
                     .body(selectedQuestion.getBody())
@@ -32,10 +30,4 @@ public class QuestionService {
             throw new RuntimeException("No questions available");
         }
     }
-
-    @Cacheable(value = "todayQuestion", key = "#today", condition = "#today != null")
-    public QuestionResponseDto getTodayQuestion(LocalDate today) {
-        return setTodayQuestion(today);
-    }
-
 }

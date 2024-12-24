@@ -22,9 +22,7 @@ public class QuestionController {
     public ResponseEntity<QuestionResponseDto> getTodayQuestion() {
         LocalDate today = LocalDate.now();
         QuestionResponseDto question = questionService.getTodayQuestion(today);
-        if (question == null) {
-            question = questionService.setTodayQuestion(today);
-        }
+
         return ResponseEntity.ok(question);
     }
 }
